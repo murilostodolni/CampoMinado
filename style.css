@@ -1,0 +1,25 @@
+body
+{
+    font-family	: sans-serif;
+    text-align	: center;
+}
+
+td, th, tr
+{
+    width: 44px;
+    height: 44px;
+    border		: 2px outset gray;
+    text-align	: center;
+
+    /* manha de "esconder" o texto */
+    /*background-color: #999;
+    //color		: #999;
+*/}
+
+td.clicked
+{
+    background-color: #ddd;
+    color: black;
+    font-size: 25px;
+    border: 2px solid #ccc;
+}
