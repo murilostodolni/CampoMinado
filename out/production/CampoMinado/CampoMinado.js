@@ -3,27 +3,196 @@ if (typeof kotlin === 'undefined') {
 }
 var CampoMinado = function (_, Kotlin) {
   'use strict';
-  var ensureNotNull = Kotlin.ensureNotNull;
+  var throwCCE = Kotlin.throwCCE;
   var toString = Kotlin.toString;
   var equals = Kotlin.equals;
-  var Random = Kotlin.kotlin.random.Random;
+  var toInt = Kotlin.kotlin.text.toInt_pdl1vz$;
+  var println = Kotlin.kotlin.io.println_s8jyv4$;
+  var contains = Kotlin.kotlin.collections.contains_c03ot6$;
+  var ensureNotNull = Kotlin.ensureNotNull;
   var equals_0 = Kotlin.kotlin.text.equals_igcy3c$;
+  var Random = Kotlin.kotlin.random.Random;
   function abrirCelula(pos) {
-    var x = document.getElementById(pos);
-    if (equals(toString(ensureNotNull(x).textContent), '*'))
-      x.innerHTML = '<img class="mina" src="img/mina.png"/>';
-    if (equals(toString(ensureNotNull(x).textContent), '1'))
-      ensureNotNull(x).className = 'clicked1';
-    if (equals(toString(ensureNotNull(x).textContent), '2'))
-      ensureNotNull(x).className = 'clicked2';
-    if (equals(toString(ensureNotNull(x).textContent), '3'))
-      ensureNotNull(x).className = 'clicked3';
-    if (equals(toString(ensureNotNull(x).textContent), '4'))
-      ensureNotNull(x).className = 'clicked4';
-    if (equals(toString(ensureNotNull(x).textContent), '5'))
-      ensureNotNull(x).className = 'clicked5';
-    if (equals(toString(ensureNotNull(x).textContent), '6'))
-      ensureNotNull(x).className = 'clicked6';
+    var tmp$;
+    var x = Kotlin.isType(tmp$ = document.getElementById(pos), HTMLTableCellElement) ? tmp$ : throwCCE();
+    if (equals(toString(x.textContent), '*')) {
+      x.className = 'mina';
+      x.innerHTML = '<img width="50" height="50" src="img/bomba.png"/>';
+    }
+    if (equals(toString(x.textContent), '0'))
+      caixaBranco(pos, numMinas);
+    else
+      caixaNumero(x);
+  }
+  function caixaNumero(x) {
+    if (equals(toString(x.textContent), '1'))
+      x.className = 'clicked1';
+    if (equals(toString(x.textContent), '2'))
+      x.className = 'clicked2';
+    if (equals(toString(x.textContent), '3'))
+      x.className = 'clicked3';
+    if (equals(toString(x.textContent), '4'))
+      x.className = 'clicked4';
+    if (equals(toString(x.textContent), '5'))
+      x.className = 'clicked5';
+    if (equals(toString(x.textContent), '6'))
+      x.className = 'clicked6';
+  }
+  var numMinas;
+  function caixaBranco(i, numAnt) {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7, tmp$_8, tmp$_9, tmp$_10, tmp$_11, tmp$_12, tmp$_13, tmp$_14, tmp$_15, tmp$_16, tmp$_17, tmp$_18, tmp$_19, tmp$_20, tmp$_21, tmp$_22, tmp$_23, tmp$_24, tmp$_25, tmp$_26, tmp$_27, tmp$_28, tmp$_29, tmp$_30, tmp$_31, tmp$_32, tmp$_33, tmp$_34, tmp$_35, tmp$_36, tmp$_37, tmp$_38, tmp$_39;
+    var caixa = Kotlin.isType(tmp$ = document.getElementById(i), HTMLTableCellElement) ? tmp$ : throwCCE();
+    var n = toInt(i);
+    println(n);
+    if (!contains(numMinas, n))
+      numMinas[n] = n;
+    var caixa1 = document.getElementById((n - 7 | 0).toString());
+    var caixa2 = document.getElementById((n - 6 | 0).toString());
+    var caixa3 = document.getElementById((n - 5 | 0).toString());
+    var caixa4 = document.getElementById((n - 1 | 0).toString());
+    var caixa5 = document.getElementById((n + 1 | 0).toString());
+    var caixa6 = document.getElementById((n + 5 | 0).toString());
+    var caixa7 = document.getElementById((n + 6 | 0).toString());
+    var caixa8 = document.getElementById((n + 7 | 0).toString());
+    caixa.className = 'clicked0';
+    if (n === 1) {
+      if (equals_0(ensureNotNull(caixa5).textContent, '0') && !contains(numMinas, n + 1 | 0))
+        caixaBranco((n + 1 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa7).textContent, '0') && !contains(numMinas, n + 6 | 0))
+        caixaBranco((n + 6 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa8).textContent, '0') && !contains(numMinas, n + 7 | 0))
+        caixaBranco((n + 7 | 0).toString(), numAnt);
+      caixaNumero(Kotlin.isType(tmp$_0 = caixa5, HTMLTableCellElement) ? tmp$_0 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_1 = caixa7, HTMLTableCellElement) ? tmp$_1 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_2 = caixa8, HTMLTableCellElement) ? tmp$_2 : throwCCE());
+    }
+     else if (n === 2 || n === 3 || n === 4 || n === 5) {
+      if (equals_0(ensureNotNull(caixa4).textContent, '0') && !contains(numMinas, n - 1 | 0))
+        caixaBranco((n - 1 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa5).textContent, '0') && !contains(numMinas, n + 1 | 0))
+        caixaBranco((n + 1 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa6).textContent, '0') && !contains(numMinas, n + 5 | 0))
+        caixaBranco((n + 5 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa7).textContent, '0') && !contains(numMinas, n + 6 | 0))
+        caixaBranco((n + 6 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa8).textContent, '0') && !contains(numMinas, n + 7 | 0))
+        caixaBranco((n + 7 | 0).toString(), numAnt);
+      caixaNumero(Kotlin.isType(tmp$_3 = caixa4, HTMLTableCellElement) ? tmp$_3 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_4 = caixa5, HTMLTableCellElement) ? tmp$_4 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_5 = caixa6, HTMLTableCellElement) ? tmp$_5 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_6 = caixa7, HTMLTableCellElement) ? tmp$_6 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_7 = caixa8, HTMLTableCellElement) ? tmp$_7 : throwCCE());
+    }
+     else if (n === 7 || n === 13 || n === 19 || n === 25) {
+      if (equals_0(ensureNotNull(caixa2).textContent, '0') && !contains(numMinas, n - 6 | 0))
+        caixaBranco((n - 6 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa3).textContent, '0') && !contains(numMinas, n - 5 | 0))
+        caixaBranco((n - 5 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa5).textContent, '0') && !contains(numMinas, n + 1 | 0))
+        caixaBranco((n + 1 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa7).textContent, '0') && !contains(numMinas, n + 6 | 0))
+        caixaBranco((n + 6 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa8).textContent, '0') && !contains(numMinas, n + 7 | 0))
+        caixaBranco((n + 7 | 0).toString(), numAnt);
+      caixaNumero(Kotlin.isType(tmp$_8 = caixa2, HTMLTableCellElement) ? tmp$_8 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_9 = caixa3, HTMLTableCellElement) ? tmp$_9 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_10 = caixa5, HTMLTableCellElement) ? tmp$_10 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_11 = caixa7, HTMLTableCellElement) ? tmp$_11 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_12 = caixa8, HTMLTableCellElement) ? tmp$_12 : throwCCE());
+    }
+     else if (n === 6) {
+      if (equals_0(ensureNotNull(caixa4).textContent, '0') && !contains(numMinas, n - 1 | 0))
+        caixaBranco((n - 1 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa6).textContent, '0') && !contains(numMinas, n + 5 | 0))
+        caixaBranco((n + 5 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa7).textContent, '0') && !contains(numMinas, n + 6 | 0))
+        caixaBranco((n + 6 | 0).toString(), numAnt);
+      caixaNumero(Kotlin.isType(tmp$_13 = caixa4, HTMLTableCellElement) ? tmp$_13 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_14 = caixa6, HTMLTableCellElement) ? tmp$_14 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_15 = caixa7, HTMLTableCellElement) ? tmp$_15 : throwCCE());
+    }
+     else if (n === 12 || n === 18 || n === 24 || n === 30) {
+      if (equals_0(ensureNotNull(caixa1).textContent, '0') && !contains(numMinas, n - 7 | 0))
+        caixaBranco((n - 7 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa2).textContent, '0') && !contains(numMinas, n - 6 | 0))
+        caixaBranco((n - 6 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa4).textContent, '0') && !contains(numMinas, n - 1 | 0))
+        caixaBranco((n - 1 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa6).textContent, '0') && !contains(numMinas, n + 5 | 0))
+        caixaBranco((n + 5 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa7).textContent, '0') && !contains(numMinas, n + 5 | 0))
+        caixaBranco((n + 6 | 0).toString(), numAnt);
+      caixaNumero(Kotlin.isType(tmp$_16 = caixa1, HTMLTableCellElement) ? tmp$_16 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_17 = caixa2, HTMLTableCellElement) ? tmp$_17 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_18 = caixa4, HTMLTableCellElement) ? tmp$_18 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_19 = caixa6, HTMLTableCellElement) ? tmp$_19 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_20 = caixa7, HTMLTableCellElement) ? tmp$_20 : throwCCE());
+    }
+     else if (n === 32 || n === 33 || n === 34 || n === 35) {
+      if (equals_0(ensureNotNull(caixa1).textContent, '0') && !contains(numMinas, n - 7 | 0))
+        caixaBranco((n - 7 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa2).textContent, '0') && !contains(numMinas, n - 6 | 0))
+        caixaBranco((n - 6 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa3).textContent, '0') && !contains(numMinas, n - 5 | 0))
+        caixaBranco((n - 5 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa4).textContent, '0') && !contains(numMinas, n - 1 | 0))
+        caixaBranco((n - 1 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa5).textContent, '0') && !contains(numMinas, n + 1 | 0))
+        caixaBranco((n + 1 | 0).toString(), numAnt);
+      caixaNumero(Kotlin.isType(tmp$_21 = caixa1, HTMLTableCellElement) ? tmp$_21 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_22 = caixa2, HTMLTableCellElement) ? tmp$_22 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_23 = caixa3, HTMLTableCellElement) ? tmp$_23 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_24 = caixa4, HTMLTableCellElement) ? tmp$_24 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_25 = caixa5, HTMLTableCellElement) ? tmp$_25 : throwCCE());
+    }
+     else if (n === 31) {
+      if (equals_0(ensureNotNull(caixa2).textContent, '0') && !contains(numMinas, n - 6 | 0))
+        caixaBranco((n - 6 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa3).textContent, '0') && !contains(numMinas, n - 5 | 0))
+        caixaBranco((n - 5 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa5).textContent, '0') && !contains(numMinas, n + 1 | 0))
+        caixaBranco((n + 1 | 0).toString(), numAnt);
+      caixaNumero(Kotlin.isType(tmp$_26 = caixa2, HTMLTableCellElement) ? tmp$_26 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_27 = caixa3, HTMLTableCellElement) ? tmp$_27 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_28 = caixa5, HTMLTableCellElement) ? tmp$_28 : throwCCE());
+    }
+     else if (n === 36) {
+      if (equals_0(ensureNotNull(caixa1).textContent, '0') && !contains(numMinas, n - 7 | 0))
+        caixaBranco((n - 7 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa2).textContent, '0') && !contains(numMinas, n - 6 | 0))
+        caixaBranco((n - 6 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa4).textContent, '0') && !contains(numMinas, n - 1 | 0))
+        caixaBranco((n - 1 | 0).toString(), numAnt);
+      caixaNumero(Kotlin.isType(tmp$_29 = caixa1, HTMLTableCellElement) ? tmp$_29 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_30 = caixa2, HTMLTableCellElement) ? tmp$_30 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_31 = caixa4, HTMLTableCellElement) ? tmp$_31 : throwCCE());
+    }
+     else {
+      if (equals_0(ensureNotNull(caixa1).textContent, '0') && !contains(numMinas, n - 7 | 0))
+        caixaBranco((n - 7 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa2).textContent, '0') && !contains(numMinas, n - 6 | 0))
+        caixaBranco((n - 6 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa3).textContent, '0') && !contains(numMinas, n - 5 | 0))
+        caixaBranco((n - 5 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa4).textContent, '0') && !contains(numMinas, n - 1 | 0))
+        caixaBranco((n - 1 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa5).textContent, '0') && !contains(numMinas, n + 1 | 0))
+        caixaBranco((n + 1 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa6).textContent, '0') && !contains(numMinas, n + 5 | 0))
+        caixaBranco((n + 5 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa7).textContent, '0') && !contains(numMinas, n + 6 | 0))
+        caixaBranco((n + 6 | 0).toString(), numAnt);
+      if (equals_0(ensureNotNull(caixa8).textContent, '0') && !contains(numMinas, n + 7 | 0))
+        caixaBranco((n + 7 | 0).toString(), numAnt);
+      caixaNumero(Kotlin.isType(tmp$_32 = caixa1, HTMLTableCellElement) ? tmp$_32 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_33 = caixa2, HTMLTableCellElement) ? tmp$_33 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_34 = caixa3, HTMLTableCellElement) ? tmp$_34 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_35 = caixa4, HTMLTableCellElement) ? tmp$_35 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_36 = caixa5, HTMLTableCellElement) ? tmp$_36 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_37 = caixa6, HTMLTableCellElement) ? tmp$_37 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_38 = caixa7, HTMLTableCellElement) ? tmp$_38 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_39 = caixa8, HTMLTableCellElement) ? tmp$_39 : throwCCE());
+    }
   }
   function main() {
     var k = 0;
@@ -138,7 +307,24 @@ var CampoMinado = function (_, Kotlin) {
     }
   }
   _.abrirCelula = abrirCelula;
+  _.caixaNumero_pb2y98$ = caixaNumero;
+  Object.defineProperty(_, 'numMinas', {
+    get: function () {
+      return numMinas;
+    },
+    set: function (value) {
+      numMinas = value;
+    }
+  });
+  _.caixaBranco_thi2i1$ = caixaBranco;
   _.main = main;
+  var array = new Int32Array(36);
+  var tmp$;
+  tmp$ = array.length - 1 | 0;
+  for (var i = 0; i <= tmp$; i++) {
+    array[i] = 0;
+  }
+  numMinas = array;
   main();
   Kotlin.defineModule('CampoMinado', _);
   return _;

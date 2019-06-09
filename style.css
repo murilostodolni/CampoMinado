@@ -10,30 +10,28 @@ table{
 
 td
 {
-    width: 44px;
-    height: 44px;
+    width: 65px;
+    height: 65px;
     border		: 2px outset gray;
     text-align	: center;
+    font-size	: 45px;
 
     /* manha de "esconder" o texto */
    background-color: #999;
     color: #999;
 }
 
-td.mina
+td.clicked0
 {
-    image-orientation: from-image"";
     background-color: #ddd;
-    font-size	: 25px;
+    color		: #ddd;
     border		: 2px solid #ccc;
 }
 
 td.clicked1
 {
-    
     background-color: #ddd;
     color		: forestgreen;
-    font-size	: 25px;
     border		: 2px solid #ccc;
 }
 
@@ -41,7 +39,6 @@ td.clicked2
 {
     background-color: #ddd;
     color		: blue;
-    font-size	: 25px;
     border		: 2px solid #ccc;
 }
 
@@ -49,7 +46,6 @@ td.clicked3
 {
     background-color: #ddd;
     color		: darkgoldenrod;
-    font-size	: 25px;
     border		: 2px solid #ccc;
 }
 
@@ -57,7 +53,6 @@ td.clicked4
 {
     background-color: #ddd;
     color		: red;
-    font-size	: 25px;
     border		: 2px solid #ccc;
 }
 
@@ -65,19 +60,18 @@ td.clicked5
 {
     background-color: #ddd;
     color		: darkred;
-    font-size	: 25px;
     border		: 2px solid #ccc;
 }
 
-td.clicked1
+td.clicked6
 {
     background-color: #ddd;
     color		: black;
-    font-size	: 25px;
     border		: 2px solid #ccc;
 }
 
-.mina{
-    width: 44px;
-    height: 44px;
+td.mina{
+    image-orientation: center;
+    background-color: red;
+    border		: 2px solid darkred;
 }
