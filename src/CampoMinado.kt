@@ -2,29 +2,25 @@ import org.w3c.dom.*
 import kotlin.browser.document
 import kotlin.random.Random
 
-fun descobrir(pos: String){
-    var x = document.getElementById(pos) as HTMLTableCellElement
-
-    println(x.textContent)
-}
-
 @JsName("abrirCelula")
 fun abrirCelula(pos: String){
-    var x = document.getElementById(pos) as HTMLTableCellElement
+    var x = document.getElementById(pos)
 
-    println(x.textContent)
+    if(x!!.textContent.toString().equals("*")) x.innerHTML = """<img class="mina" src="img/mina.png"/>"""
+
+    if(x!!.textContent.toString().equals("1")) x!!.className = "clicked1"
+    if(x!!.textContent.toString().equals("2")) x!!.className = "clicked2"
+    if(x!!.textContent.toString().equals("3")) x!!.className = "clicked3"
+    if(x!!.textContent.toString().equals("4")) x!!.className = "clicked4"
+    if(x!!.textContent.toString().equals("5")) x!!.className = "clicked5"
+    if(x!!.textContent.toString().equals("6")) x!!.className = "clicked6"
+
+
 }
-
-//val tabela = document.getElementById("table") as HTMLElement
 
 fun main() {
 
-    for(j in 1..36){
-        val caixa = document.getElementById(j.toString())
-
-        caixa!!.innerHTML = "0"
-    }
-
+    //para criar minar no campo
     var k = 0
     while(k < 10){
         val mina = Random.nextInt(1,36)
@@ -38,8 +34,16 @@ fun main() {
         }
     }
 
+    //percorre todas as caixas para verificar se existem minas ao redor
     for(i in 1..36){
+        //caixa central
         val caixa = document.getElementById(i.toString())
+
+        /* metodo para percorrer matriz e verificar se existem bombas da forma abaixo
+            caixa1 | caixa2 | caixa3
+            caixa4 |  caixa | caixa5
+            caixa6 | caixa7 | caixa8
+         */
         val caixa1 = document.getElementById((i - 7).toString())
         val caixa2 = document.getElementById((i - 6).toString())
         val caixa3 = document.getElementById((i - 5).toString())

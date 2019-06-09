@@ -4,7 +4,11 @@ body
     text-align	: center;
 }
 
-td, th, tr
+table{
+    alignment: center;
+}
+
+td
 {
     width: 44px;
     height: 44px;
@@ -12,14 +16,68 @@ td, th, tr
     text-align	: center;
 
     /* manha de "esconder" o texto */
-    /*background-color: #999;
-    //color		: #999;
-*/}
+   background-color: #999;
+    color: #999;
+}
 
-td.clicked
+td.mina
+{
+    image-orientation: from-image"";
+    background-color: #ddd;
+    font-size	: 25px;
+    border		: 2px solid #ccc;
+}
+
+td.clicked1
+{
+    
+    background-color: #ddd;
+    color		: forestgreen;
+    font-size	: 25px;
+    border		: 2px solid #ccc;
+}
+
+td.clicked2
 {
     background-color: #ddd;
-    color: black;
-    font-size: 25px;
-    border: 2px solid #ccc;
+    color		: blue;
+    font-size	: 25px;
+    border		: 2px solid #ccc;
+}
+
+td.clicked3
+{
+    background-color: #ddd;
+    color		: darkgoldenrod;
+    font-size	: 25px;
+    border		: 2px solid #ccc;
+}
+
+td.clicked4
+{
+    background-color: #ddd;
+    color		: red;
+    font-size	: 25px;
+    border		: 2px solid #ccc;
+}
+
+td.clicked5
+{
+    background-color: #ddd;
+    color		: darkred;
+    font-size	: 25px;
+    border		: 2px solid #ccc;
+}
+
+td.clicked1
+{
+    background-color: #ddd;
+    color		: black;
+    font-size	: 25px;
+    border		: 2px solid #ccc;
+}
+
+.mina{
+    width: 44px;
+    height: 44px;
 }
