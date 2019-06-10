@@ -2,32 +2,74 @@ import org.w3c.dom.*
 import kotlin.browser.document
 import kotlin.random.Random
 
-@JsName("abrirCelula")
-fun abrirCelula(pos: String){
-    val x = document.getElementById(pos) as HTMLTableCellElement
+fun imagemMina() = """<img width="30" height="30" src="img/bomba.png"/>"""
 
-    //se for uma mina, altera a classe para mina e manda a foto da mina para o html
-    if(x.textContent.toString().equals("*")){
-        x.className="mina"
-        x.innerHTML = """<img width="50" height="50" src="img/bomba.png"/>"""
-    }
-
-    /*dependendo do numero de minas que tiver ao redor,
-      vai mudar a classe para colorir os numeros!
-     */
-    if(x.textContent.toString().equals("0")) caixaBranco(pos, numMinas) else caixaNumero(x)
-
+fun gameOver(){
 
 }
 
+fun venceu(){
+
+}
+
+@JsName("abrirCelula")
+fun abrirCelula(pos: String){
+    val x = document.getElementById(pos) as HTMLTableCellElement
+    println(x.className)
+    /*dependendo do numero de minas que tiver ao redor,
+      vai mudar a classe para colorir os numeros!
+     */
+    if(x.textContent.toString().equals("0")){
+        caixaBranco(pos, numMinas)
+    } else if(x.textContent.toString().equals("*")){
+        x.className="mina-clicked"
+        x.innerHTML = imagemMina()
+
+        for(i in 1..36){
+            //caixa central
+            val minaRest = document.getElementById(i.toString()) as HTMLTableCellElement
+
+            if(minaRest.textContent.toString().equals("*")) {
+                minaRest.className = "mina"
+                minaRest.innerHTML = imagemMina()
+            }
+        }
+
+    } else caixaNumero(x)
+
+    verificaGanhador()
+
+}
+
+//TODO VER METODO
+fun verificaGanhador(){
+    var isMina = 0
+    for(i in 1..36){
+        val caixa = document.getElementById(i.toString()) as HTMLTableCellElement
+
+        if(caixa.className == null && caixa.textContent.toString().equals("*")){
+            isMina = isMina + 1
+        }
+        if(caixa.className == null && !caixa.textContent.toString().equals("*")){
+            break
+        }
+    }
+
+    if(isMina == 7){
+        val info = document.getElementById("infoJogo") as HTMLDivElement
+        info.innerHTML == """Ganhou"""
+    }
+
+}
+
+//funcao para deixar os numeros com cor (CSS)
 fun caixaNumero(x: HTMLTableCellElement){
-    //if(x.textContent.toString().equals("0")) x.className = "clicked0"
-    if(x.textContent.toString().equals("1")) x.className = "clicked1"
-    if(x.textContent.toString().equals("2")) x.className = "clicked2"
-    if(x.textContent.toString().equals("3")) x.className = "clicked3"
-    if(x.textContent.toString().equals("4")) x.className = "clicked4"
-    if(x.textContent.toString().equals("5")) x.className = "clicked5"
-    if(x.textContent.toString().equals("6")) x.className = "clicked6"
+    if(x.textContent.toString().equals("1")) x.className = "clicked num1"
+    if(x.textContent.toString().equals("2")) x.className = "clicked num2"
+    if(x.textContent.toString().equals("3")) x.className = "clicked num3"
+    if(x.textContent.toString().equals("4")) x.className = "clicked num4"
+    if(x.textContent.toString().equals("5")) x.className = "clicked num5"
+    if(x.textContent.toString().equals("6")) x.className = "clicked num6"
 }
 
 var numMinas = IntArray(36, {0})
@@ -55,7 +97,8 @@ fun caixaBranco(i: String, numAnt: IntArray) {
     val caixa7 = document.getElementById((n + 6).toString())
     val caixa8 = document.getElementById((n + 7).toString())
 
-    caixa.className = "clicked0"
+    //deixando a caixa sem informacao (CSS)
+    caixa.className = "clicked num0"
 
         if(n == 1){
             if (caixa5!!.textContent.equals("0") && !numMinas.contains(n + 1)) caixaBranco((n + 1).toString(), numAnt)
@@ -159,10 +202,11 @@ fun caixaBranco(i: String, numAnt: IntArray) {
 }
 
 fun main() {
+    val numDeMinas = 7
 
     //para criar minas no campo
     var k = 0
-    while(k < 10){
+    while(k < numDeMinas){
         val mina = Random.nextInt(1,36)
 
         val caixa = document.getElementById(mina.toString())

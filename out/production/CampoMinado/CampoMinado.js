@@ -4,39 +4,73 @@ if (typeof kotlin === 'undefined') {
 var CampoMinado = function (_, Kotlin) {
   'use strict';
   var throwCCE = Kotlin.throwCCE;
+  var println = Kotlin.kotlin.io.println_s8jyv4$;
   var toString = Kotlin.toString;
   var equals = Kotlin.equals;
   var toInt = Kotlin.kotlin.text.toInt_pdl1vz$;
-  var println = Kotlin.kotlin.io.println_s8jyv4$;
   var contains = Kotlin.kotlin.collections.contains_c03ot6$;
   var ensureNotNull = Kotlin.ensureNotNull;
   var equals_0 = Kotlin.kotlin.text.equals_igcy3c$;
   var Random = Kotlin.kotlin.random.Random;
+  function imagemMina() {
+    return '<img width="30" height="30" src="img/bomba.png"/>';
+  }
+  function gameOver() {
+  }
+  function venceu() {
+  }
   function abrirCelula(pos) {
-    var tmp$;
+    var tmp$, tmp$_0;
     var x = Kotlin.isType(tmp$ = document.getElementById(pos), HTMLTableCellElement) ? tmp$ : throwCCE();
-    if (equals(toString(x.textContent), '*')) {
-      x.className = 'mina';
-      x.innerHTML = '<img width="50" height="50" src="img/bomba.png"/>';
-    }
-    if (equals(toString(x.textContent), '0'))
+    println(x.className);
+    if (equals(toString(x.textContent), '0')) {
       caixaBranco(pos, numMinas);
-    else
+    }
+     else if (equals(toString(x.textContent), '*')) {
+      x.className = 'mina-clicked';
+      x.innerHTML = imagemMina();
+      for (var i = 1; i <= 36; i++) {
+        var minaRest = Kotlin.isType(tmp$_0 = document.getElementById(i.toString()), HTMLTableCellElement) ? tmp$_0 : throwCCE();
+        if (equals(toString(minaRest.textContent), '*')) {
+          minaRest.className = 'mina';
+          minaRest.innerHTML = imagemMina();
+        }
+      }
+    }
+     else
       caixaNumero(x);
+    verificaGanhador();
+  }
+  function verificaGanhador() {
+    var tmp$, tmp$_0;
+    var isMina = 0;
+    for (var i = 1; i <= 36; i++) {
+      var caixa = Kotlin.isType(tmp$ = document.getElementById(i.toString()), HTMLTableCellElement) ? tmp$ : throwCCE();
+      if (caixa.className == null && equals(toString(caixa.textContent), '*')) {
+        isMina = isMina + 1 | 0;
+      }
+      if (caixa.className == null && !equals(toString(caixa.textContent), '*')) {
+        break;
+      }
+    }
+    if (isMina === 7) {
+      var info = Kotlin.isType(tmp$_0 = document.getElementById('infoJogo'), HTMLDivElement) ? tmp$_0 : throwCCE();
+      equals(info.innerHTML, 'Ganhou');
+    }
   }
   function caixaNumero(x) {
     if (equals(toString(x.textContent), '1'))
-      x.className = 'clicked1';
+      x.className = 'clicked num1';
     if (equals(toString(x.textContent), '2'))
-      x.className = 'clicked2';
+      x.className = 'clicked num2';
     if (equals(toString(x.textContent), '3'))
-      x.className = 'clicked3';
+      x.className = 'clicked num3';
     if (equals(toString(x.textContent), '4'))
-      x.className = 'clicked4';
+      x.className = 'clicked num4';
     if (equals(toString(x.textContent), '5'))
-      x.className = 'clicked5';
+      x.className = 'clicked num5';
     if (equals(toString(x.textContent), '6'))
-      x.className = 'clicked6';
+      x.className = 'clicked num6';
   }
   var numMinas;
   function caixaBranco(i, numAnt) {
@@ -54,7 +88,7 @@ var CampoMinado = function (_, Kotlin) {
     var caixa6 = document.getElementById((n + 5 | 0).toString());
     var caixa7 = document.getElementById((n + 6 | 0).toString());
     var caixa8 = document.getElementById((n + 7 | 0).toString());
-    caixa.className = 'clicked0';
+    caixa.className = 'clicked num0';
     if (n === 1) {
       if (equals_0(ensureNotNull(caixa5).textContent, '0') && !contains(numMinas, n + 1 | 0))
         caixaBranco((n + 1 | 0).toString(), numAnt);
@@ -195,8 +229,9 @@ var CampoMinado = function (_, Kotlin) {
     }
   }
   function main() {
+    var numDeMinas = 7;
     var k = 0;
-    while (k < 10) {
+    while (k < numDeMinas) {
       var mina = Random.Default.nextInt_vux9f0$(1, 36);
       var caixa = document.getElementById(mina.toString());
       if (!equals_0(caixa != null ? caixa.textContent : null, '*')) {
@@ -306,7 +341,11 @@ var CampoMinado = function (_, Kotlin) {
       }
     }
   }
+  _.imagemMina = imagemMina;
+  _.gameOver = gameOver;
+  _.venceu = venceu;
   _.abrirCelula = abrirCelula;
+  _.verificaGanhador = verificaGanhador;
   _.caixaNumero_pb2y98$ = caixaNumero;
   Object.defineProperty(_, 'numMinas', {
     get: function () {

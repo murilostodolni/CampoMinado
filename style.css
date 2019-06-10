@@ -10,68 +10,65 @@ table{
 
 td
 {
-    width: 65px;
-    height: 65px;
-    border		: 2px outset gray;
+    width: 40px;
+    height: 40px;
+    border		: 3px outset #7F8084;
     text-align	: center;
-    font-size	: 45px;
+    font-size	: 25px;
 
     /* manha de "esconder" o texto */
-   background-color: #999;
-    color: #999;
+   background-color: #C1C1C1;
+    color: #C1C1C1;
 }
 
-td.clicked0
+td:hover{
+    background-color: #939393;
+    color: #939393;
+}
+
+td.clicked
 {
+    background-color: #ddd;
+    border		: 3px solid #7F8084;
+}
+
+.num0:not(:placeholder-shown){
     background-color: #ddd;
     color		: #ddd;
-    border		: 2px solid #ccc;
 }
 
-td.clicked1
-{
-    background-color: #ddd;
+.num1:not(:placeholder-shown){
     color		: forestgreen;
-    border		: 2px solid #ccc;
 }
 
-td.clicked2
-{
-    background-color: #ddd;
+.num2:not(:placeholder-shown){
     color		: blue;
-    border		: 2px solid #ccc;
 }
 
-td.clicked3
-{
-    background-color: #ddd;
+.num3:not(:placeholder-shown){
     color		: darkgoldenrod;
-    border		: 2px solid #ccc;
 }
 
-td.clicked4
-{
-    background-color: #ddd;
+.num4:not(:placeholder-shown){
     color		: red;
-    border		: 2px solid #ccc;
 }
 
-td.clicked5
-{
-    background-color: #ddd;
+.num5:not(:placeholder-shown){
     color		: darkred;
-    border		: 2px solid #ccc;
 }
 
-td.clicked6
-{
-    background-color: #ddd;
+.num6:not(:placeholder-shown){
     color		: black;
-    border		: 2px solid #ccc;
 }
 
-td.mina{
+td.mina:not(:placeholder-shown){
+    image-orientation: center;
+    background-color: #ddd;
+    border		: 3px solid #7F8084;
+}
+
+.mina-clicked:not(:placeholder-shown){
     image-orientation: center;
     background-color: red;
-    border		: 2px solid darkred;
+    border		: 3px solid red;
 }
