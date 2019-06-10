@@ -1,15 +1,28 @@
 import org.w3c.dom.*
+import org.w3c.dom.events.MouseEvent
 import kotlin.browser.document
 import kotlin.random.Random
 
 fun imagemMina() = """<img width="30" height="30" src="img/bomba.png"/>"""
 
 fun gameOver(){
-
+    val info = document.getElementById("infoJogo") as HTMLDivElement
+    info.innerHTML = """Perdeu :("""
 }
 
 fun venceu(){
+    val info = document.getElementById("infoJogo") as HTMLDivElement
+    info.innerHTML = """Ganhou :)"""
+}
 
+//TODO VER METODO
+fun desabilitaCliqueMouse(){
+    for(i in 1..36){
+        //caixa central
+        val caixa = document.getElementById(i.toString())
+
+        //caixa.
+    }
 }
 
 @JsName("abrirCelula")
@@ -21,7 +34,7 @@ fun abrirCelula(pos: String){
      */
     if(x.textContent.toString().equals("0")){
         caixaBranco(pos, numMinas)
-    } else if(x.textContent.toString().equals("*")){
+    } else if(x.textContent.toString().equals("*")){ //verifica se eh uma mina
         x.className="mina-clicked"
         x.innerHTML = imagemMina()
 
@@ -35,29 +48,32 @@ fun abrirCelula(pos: String){
             }
         }
 
+        gameOver()
+
     } else caixaNumero(x)
 
     verificaGanhador()
-
 }
 
-//TODO VER METODO
+/*metodo para verificar se ganhou o jogo (percorre a matriz de 1 a 36,
+  se tiver uma casa diferente de '*' já muda para false, ou seja, não ganhou.
+  Caso ele percorra as 36 caixas e não mude para false, siginifica que só exitem as
+  caixas fechadas com minas no campo
+ */
 fun verificaGanhador(){
-    var isMina = 0
+    var isMina = true
     for(i in 1..36){
         val caixa = document.getElementById(i.toString()) as HTMLTableCellElement
 
-        if(caixa.className == null && caixa.textContent.toString().equals("*")){
-            isMina = isMina + 1
-        }
-        if(caixa.className == null && !caixa.textContent.toString().equals("*")){
+        if(caixa.className.equals("caixaFechada") && !caixa.textContent.toString().equals("*")){
+            isMina = false
             break
         }
     }
 
-    if(isMina == 7){
-        val info = document.getElementById("infoJogo") as HTMLDivElement
-        info.innerHTML == """Ganhou"""
+    //envia para a div do html que o jogador ganhou
+    if(isMina == true){
+        venceu()
     }
 
 }
@@ -72,8 +88,14 @@ fun caixaNumero(x: HTMLTableCellElement){
     if(x.textContent.toString().equals("6")) x.className = "clicked num6"
 }
 
+/*eh utilizado na funcao recursiva abaixo, para saber quais caixa já foram verificadas,
+  dessa forma a funcao não entra em loop infinito!!!
+ */
 var numMinas = IntArray(36, {0})
 
+/* funcao recursiva, responsavel por abrir as caixas com valor '0', ou seja,
+   sem minas ao redor....
+*/
 fun caixaBranco(i: String, numAnt: IntArray) {
     val caixa = document.getElementById(i) as HTMLTableCellElement
 
@@ -176,6 +198,7 @@ fun caixaBranco(i: String, numAnt: IntArray) {
             if (caixa1!!.textContent.equals("0") && !numMinas.contains(n - 7)) caixaBranco((n - 7).toString(), numAnt)
             if (caixa2!!.textContent.equals("0") && !numMinas.contains(n - 6)) caixaBranco((n - 6).toString(), numAnt)
             if (caixa4!!.textContent.equals("0") && !numMinas.contains(n - 1)) caixaBranco((n - 1).toString(), numAnt)
+
             caixaNumero(caixa1 as HTMLTableCellElement)
             caixaNumero(caixa2 as HTMLTableCellElement)
             caixaNumero(caixa4 as HTMLTableCellElement)
@@ -287,7 +310,4 @@ fun main() {
             caixa!!.innerHTML = numMinas.toString()
         }
     }
-
-
-
 }
