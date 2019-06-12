@@ -5,30 +5,43 @@ import kotlin.random.Random
 
 fun imagemMina() = """<img width="30" height="30" src="img/bomba.png"/>"""
 
+fun imagemBandeira() = """<img width="30" height="30" src="img/bandeira.png"/>"""
+
+@JsName("posivelMina")
+fun posivelMina(pos: String){
+    val x = document.getElementById(pos) as HTMLTableCellElement
+
+    //x.className="mina-clicked"
+    x.innerHTML = imagemBandeira()
+}
+
 fun gameOver(){
     val info = document.getElementById("infoJogo") as HTMLDivElement
     info.innerHTML = """Perdeu :("""
+
+    desabilitaCliqueMouse()
 }
 
 fun venceu(){
     val info = document.getElementById("infoJogo") as HTMLDivElement
     info.innerHTML = """Ganhou :)"""
+
+    desabilitaCliqueMouse()
 }
 
-//TODO VER METODO
+/*Funcao responsavel por bloquear cliques apos ganhar ou perder a partida */
 fun desabilitaCliqueMouse(){
     for(i in 1..36){
-        //caixa central
-        val caixa = document.getElementById(i.toString())
+        val caixa = document.getElementById(i.toString()) as HTMLTableCellElement
 
-        //caixa.
+        caixa.onclick= {""}
     }
 }
 
 @JsName("abrirCelula")
 fun abrirCelula(pos: String){
     val x = document.getElementById(pos) as HTMLTableCellElement
-    println(x.className)
+
     /*dependendo do numero de minas que tiver ao redor,
       vai mudar a classe para colorir os numeros!
      */
@@ -39,7 +52,6 @@ fun abrirCelula(pos: String){
         x.innerHTML = imagemMina()
 
         for(i in 1..36){
-            //caixa central
             val minaRest = document.getElementById(i.toString()) as HTMLTableCellElement
 
             if(minaRest.textContent.toString().equals("*")) {
@@ -71,6 +83,7 @@ fun verificaGanhador(){
         }
     }
 
+    //TODO da para fazer se for == 37 (nesse caso não precisa usar boolean)
     //envia para a div do html que o jogador ganhou
     if(isMina == true){
         venceu()
@@ -95,6 +108,11 @@ var numMinas = IntArray(36, {0})
 
 /* funcao recursiva, responsavel por abrir as caixas com valor '0', ou seja,
    sem minas ao redor....
+
+   IDEIA: verifica todos as caixas ao redor, se houver caixas com 0, faz a recursividade entrando em casa uma delas,
+   quando for voltando da recursividade vai abrindo todas as caixas ao redor da caixa principal naquela recursão.
+   OBS: Utilizar um array de int foi a unica maneira de evitar que a recursao entre em um loop infinito entre duas caixas,
+   pois ele só entra em determinada caixa se ela não estiver no array, ou seja, não esa amarrada em nenhuma recursão para trás...
 */
 fun caixaBranco(i: String, numAnt: IntArray) {
     val caixa = document.getElementById(i) as HTMLTableCellElement
@@ -224,23 +242,49 @@ fun caixaBranco(i: String, numAnt: IntArray) {
 
 }
 
-fun main() {
-    val numDeMinas = 7
-
-    //para criar minas no campo
-    var k = 0
-    while(k < numDeMinas){
-        val mina = Random.nextInt(1,36)
+fun criaMinasCampo(numMinas: Int){
+    if(numMinas == 0)
+        return
+    else {
+        val mina = Random.nextInt(1, 36)
 
         val caixa = document.getElementById(mina.toString())
 
         //so vai adicinar * caso nao haja mina ali
-        if(!caixa?.textContent.equals("*")){
+        if (!caixa?.textContent.equals("*")) {
             caixa!!.innerHTML = "*"
-            k = k + 1
-        }
+            criaMinasCampo(numMinas - 1)
+        } else criaMinasCampo(numMinas)
     }
+}
 
+/*
+  COMO FUNCIONA A LOGICA DO JOGO:
+  1  | 2  | 3  | 4  | 5  | 6
+  7  | 8  | 9  | 10 | 11 | 12
+  13 | 14 | 15 | 16 | 17 | 18
+  19 | 20 | 21 | 22 | 23 | 24
+  25 | 26 | 27 | 28 | 29 | 30
+  31 | 32 | 33 | 34 | 35 | 36
+
+  essa é a matriz do jogo, para que nao haja problemas na hora que verificar se existem bolas ao redor,
+  é preciso divir as caixas, pois existem restricoes diferentes...
+  -> 1 verifica apenas 2 (+1), 7 (+6) e 8 (+7)
+  -> 7, 13, 19, 25 verificam apenas -6, -5, +1, +6 e +7
+  -> 31 verifica apenas -6, -5 e + 1
+  -> 6 igual ao 1 (ao contrario)
+  -> 36 igual ao 31 (ao contrario)
+  -> 12, 18, 24 e 30 igual 7, 13....
+  -> o resto é tudo indiferente, ou seja, tem que verificar todas as caixa ao redor (-7, -6, -5, -1, +1, +5, +6 e +7)
+
+ */
+fun main() {
+    val numDeMinas = 7
+
+    //para criar minas no campo
+    criaMinasCampo(numDeMinas)
+
+    //TODO TENTAR FAZER UMA RECURSAO
     //percorre todas as caixas para verificar se existem minas ao redor
     for(i in 1..36){
         //caixa central
