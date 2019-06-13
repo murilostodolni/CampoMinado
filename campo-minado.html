@@ -13,10 +13,13 @@
         <br>
         <br>
     </div>
-    <div id="campo" style="alignment: center">
+    <div id="infoJogo">
+        <img width="30" height="30" src="img/bomba.png"/>
+    </div>
+    <div id="campo" style="alignment: center" ondblclick="">
         <table id="table">
             <tr>
-                <td id="1" onclick="CampoMinado.abrirCelula('1')" class="caixaFechada"></td>
+                <td id="1" ondblclick="" onclick="CampoMinado.abrirCelula('1')" class="caixaFechada"></td>
                 <td id="2" onclick="CampoMinado.abrirCelula('2')" class="caixaFechada"></td>
                 <td id="3" onclick="CampoMinado.abrirCelula('3')" class="caixaFechada"></td>
                 <td id="4" onclick="CampoMinado.abrirCelula('4')" class="caixaFechada"></td>
@@ -65,7 +68,8 @@
             </tr>
         </table>
     </div>
-    <div id="infoJogo">
+    <hr>
+    <div id="resultJogo">
 
     </div>
 </center>

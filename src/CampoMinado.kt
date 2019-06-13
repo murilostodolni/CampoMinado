@@ -16,15 +16,21 @@ fun posivelMina(pos: String){
 }
 
 fun gameOver(){
-    val info = document.getElementById("infoJogo") as HTMLDivElement
-    info.innerHTML = """Perdeu :("""
+    val info = document.getElementById("resultJogo") as HTMLDivElement
+    info.innerHTML = """Perdeu :(
+        <p>
+        <a href="campo-minado.html"><button onclick="campo-minado.html">Jogar Novamente</button></a>
+    """.trimMargin()
 
     desabilitaCliqueMouse()
 }
 
 fun venceu(){
-    val info = document.getElementById("infoJogo") as HTMLDivElement
-    info.innerHTML = """Ganhou :)"""
+    val info = document.getElementById("resultJogo") as HTMLDivElement
+    info.innerHTML = """Ganhou :)
+        <p>
+        <a href="campo-minado.html"><button onclick="campo-minado.html">Jogar Novamente</button></a>
+    """.trimMargin()
 
     desabilitaCliqueMouse()
 }
@@ -104,7 +110,7 @@ fun caixaNumero(x: HTMLTableCellElement){
 /*eh utilizado na funcao recursiva abaixo, para saber quais caixa já foram verificadas,
   dessa forma a funcao não entra em loop infinito!!!
  */
-var numMinas = IntArray(36, {0})
+var numMinas = mutableListOf<Int>()
 
 /* funcao recursiva, responsavel por abrir as caixas com valor '0', ou seja,
    sem minas ao redor....
@@ -114,7 +120,7 @@ var numMinas = IntArray(36, {0})
    OBS: Utilizar um array de int foi a unica maneira de evitar que a recursao entre em um loop infinito entre duas caixas,
    pois ele só entra em determinada caixa se ela não estiver no array, ou seja, não esa amarrada em nenhuma recursão para trás...
 */
-fun caixaBranco(i: String, numAnt: IntArray) {
+fun caixaBranco(i: String, numAnt: MutableList<Int>) {
     val caixa = document.getElementById(i) as HTMLTableCellElement
 
     /* metodo para percorrer matriz e verificar se existem bombas da forma abaixo
@@ -122,11 +128,9 @@ fun caixaBranco(i: String, numAnt: IntArray) {
         caixa4 |  caixa | caixa5
         caixa6 | caixa7 | caixa8
      */
-    val n = i.toInt()
+    val n = i.toInt() //para não precisar ficar chamando a funcao nos if abaixo
 
-    println(n)
-
-    if(!numMinas.contains(n)) numMinas.set(n, n)
+    if(!numMinas.contains(n)) numMinas.add(n) //se o num nao ainda nao tiver na lista, adiciona
 
     val caixa1 = document.getElementById((n - 7).toString())
     val caixa2 = document.getElementById((n - 6).toString())
@@ -137,8 +141,7 @@ fun caixaBranco(i: String, numAnt: IntArray) {
     val caixa7 = document.getElementById((n + 6).toString())
     val caixa8 = document.getElementById((n + 7).toString())
 
-    //deixando a caixa sem informacao (CSS)
-    caixa.className = "clicked num0"
+    caixa.className = "clicked num0" //deixando a caixa sem informacao (CSS)
 
         if(n == 1){
             if (caixa5!!.textContent.equals("0") && !numMinas.contains(n + 1)) caixaBranco((n + 1).toString(), numAnt)
@@ -258,32 +261,7 @@ fun criaMinasCampo(numMinas: Int){
     }
 }
 
-/*
-  COMO FUNCIONA A LOGICA DO JOGO:
-  1  | 2  | 3  | 4  | 5  | 6
-  7  | 8  | 9  | 10 | 11 | 12
-  13 | 14 | 15 | 16 | 17 | 18
-  19 | 20 | 21 | 22 | 23 | 24
-  25 | 26 | 27 | 28 | 29 | 30
-  31 | 32 | 33 | 34 | 35 | 36
-
-  essa é a matriz do jogo, para que nao haja problemas na hora que verificar se existem bolas ao redor,
-  é preciso divir as caixas, pois existem restricoes diferentes...
-  -> 1 verifica apenas 2 (+1), 7 (+6) e 8 (+7)
-  -> 7, 13, 19, 25 verificam apenas -6, -5, +1, +6 e +7
-  -> 31 verifica apenas -6, -5 e + 1
-  -> 6 igual ao 1 (ao contrario)
-  -> 36 igual ao 31 (ao contrario)
-  -> 12, 18, 24 e 30 igual 7, 13....
-  -> o resto é tudo indiferente, ou seja, tem que verificar todas as caixa ao redor (-7, -6, -5, -1, +1, +5, +6 e +7)
-
- */
-fun main() {
-    val numDeMinas = 7
-
-    //para criar minas no campo
-    criaMinasCampo(numDeMinas)
-
+fun varreCampo(){
     //TODO TENTAR FAZER UMA RECURSAO
     //percorre todas as caixas para verificar se existem minas ao redor
     for(i in 1..36){
@@ -354,4 +332,41 @@ fun main() {
             caixa!!.innerHTML = numMinas.toString()
         }
     }
+}
+
+fun informaNumMinas(num: Int){
+    val info = document.getElementById("infoJogo") as HTMLDivElement
+    info.innerHTML += """
+        : ${num}
+    """.trimIndent()
+}
+
+/*
+  COMO FUNCIONA A LOGICA DO JOGO:
+  1  | 2  | 3  | 4  | 5  | 6
+  7  | 8  | 9  | 10 | 11 | 12
+  13 | 14 | 15 | 16 | 17 | 18
+  19 | 20 | 21 | 22 | 23 | 24
+  25 | 26 | 27 | 28 | 29 | 30
+  31 | 32 | 33 | 34 | 35 | 36
+
+  essa é a matriz do jogo, para que nao haja problemas na hora que verificar se existem bolas ao redor,
+  é preciso divir as caixas, pois existem restricoes diferentes...
+  -> 1 verifica apenas 2 (+1), 7 (+6) e 8 (+7)
+  -> 7, 13, 19, 25 verificam apenas -6, -5, +1, +6 e +7
+  -> 31 verifica apenas -6, -5 e + 1
+  -> 6 igual ao 1 (ao contrario)
+  -> 36 igual ao 31 (ao contrario)
+  -> 12, 18, 24 e 30 igual 7, 13....
+  -> o resto é tudo indiferente, ou seja, tem que verificar todas as caixa ao redor (-7, -6, -5, -1, +1, +5, +6 e +7)
+
+ */
+fun main() {
+    val numDeMinas = 7
+
+    informaNumMinas(numDeMinas)
+
+    criaMinasCampo(numDeMinas) //para criar minas no campo
+
+    varreCampo() //adiciona o num de minas ao redor de cada celula
 }
