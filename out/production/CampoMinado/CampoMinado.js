@@ -23,16 +23,16 @@ var CampoMinado = function (_, Kotlin) {
     var x = Kotlin.isType(tmp$ = document.getElementById(pos), HTMLTableCellElement) ? tmp$ : throwCCE();
     x.innerHTML = imagemBandeira();
   }
-  function gameOver() {
+  function resultadoJogo(result) {
     var tmp$;
     var info = Kotlin.isType(tmp$ = document.getElementById('resultJogo'), HTMLDivElement) ? tmp$ : throwCCE();
-    info.innerHTML = trimMargin('Perdeu :(\n        <p>\n        <a href="campo-minado.html"><button onclick="campo-minado.html">Jogar Novamente<\/button><\/a>\n    ');
-    desabilitaCliqueMouse();
-  }
-  function venceu() {
-    var tmp$;
-    var info = Kotlin.isType(tmp$ = document.getElementById('resultJogo'), HTMLDivElement) ? tmp$ : throwCCE();
-    info.innerHTML = trimMargin('Ganhou :)\n        <p>\n        <a href="campo-minado.html"><button onclick="campo-minado.html">Jogar Novamente<\/button><\/a>\n    ');
+    if (result) {
+      info.innerHTML = trimMargin('Ganhou :)\n        <p>\n    ');
+    }
+     else {
+      info.innerHTML = trimMargin('Perdeu :(\n        <p>\n    ');
+    }
+    info.innerHTML = info.innerHTML + '<a href="campo-minado.html"><button onclick="campo-minado.html">Jogar Novamente<\/button><\/a>';
     desabilitaCliqueMouse();
   }
   function desabilitaCliqueMouse$lambda(it) {
@@ -50,10 +50,9 @@ var CampoMinado = function (_, Kotlin) {
   function abrirCelula(pos) {
     var tmp$, tmp$_0;
     var x = Kotlin.isType(tmp$ = document.getElementById(pos), HTMLTableCellElement) ? tmp$ : throwCCE();
-    if (equals(toString(x.textContent), '0')) {
+    if (equals(toString(x.textContent), '0'))
       caixaBranco(String.fromCharCode(pos.charCodeAt(0)), String.fromCharCode(pos.charCodeAt(1)));
-    }
-     else if (equals(toString(x.textContent), '*')) {
+    else if (equals(toString(x.textContent), '*')) {
       x.className = 'mina-clicked';
       x.innerHTML = imagemMina();
       for (var j = 0; j <= 5; j++) {
@@ -65,7 +64,7 @@ var CampoMinado = function (_, Kotlin) {
           }
         }
       }
-      gameOver();
+      resultadoJogo(false);
     }
      else
       caixaNumero(x);
@@ -84,7 +83,7 @@ var CampoMinado = function (_, Kotlin) {
       }
     }
     if (isMina === true) {
-      venceu();
+      resultadoJogo(true);
     }
   }
   function caixaNumero(x) {
@@ -227,8 +226,7 @@ var CampoMinado = function (_, Kotlin) {
   _.imagemMina = imagemMina;
   _.imagemBandeira = imagemBandeira;
   _.posivelMina = posivelMina;
-  _.gameOver = gameOver;
-  _.venceu = venceu;
+  _.resultadoJogo_6taknv$ = resultadoJogo;
   _.desabilitaCliqueMouse = desabilitaCliqueMouse;
   _.abrirCelula = abrirCelula;
   _.verificaGanhador = verificaGanhador;
