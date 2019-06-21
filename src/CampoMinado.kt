@@ -37,10 +37,12 @@ fun venceu(){
 
 /*Funcao responsavel por bloquear cliques apos ganhar ou perder a partida */
 fun desabilitaCliqueMouse(){
-    for(i in 1..36){
-        val caixa = document.getElementById(i.toString()) as HTMLTableCellElement
+    for(j in 0..5){
+        for(i in 0..5){
+            val caixa = document.getElementById(j.toString() + i.toString()) as HTMLTableCellElement
 
-        caixa.onclick= {""}
+            caixa.onclick= {""}
+        }
     }
 }
 
@@ -52,17 +54,19 @@ fun abrirCelula(pos: String){
       vai mudar a classe para colorir os numeros!
      */
     if(x.textContent.toString().equals("0")){
-        caixaBranco(pos, numMinas)
+        caixaBranco(pos.get(0).toString(), pos.get(1).toString())
     } else if(x.textContent.toString().equals("*")){ //verifica se eh uma mina
         x.className="mina-clicked"
         x.innerHTML = imagemMina()
 
-        for(i in 1..36){
-            val minaRest = document.getElementById(i.toString()) as HTMLTableCellElement
+        for(j in 0..5){
+            for(i in 0..5){
+                val minaRest = document.getElementById(j.toString() + i.toString()) as HTMLTableCellElement
 
-            if(minaRest.textContent.toString().equals("*")) {
-                minaRest.className = "mina"
-                minaRest.innerHTML = imagemMina()
+                if(minaRest.textContent.toString().equals("*")) {
+                    minaRest.className = "mina"
+                    minaRest.innerHTML = imagemMina()
+                }
             }
         }
 
@@ -80,12 +84,14 @@ fun abrirCelula(pos: String){
  */
 fun verificaGanhador(){
     var isMina = true
-    for(i in 1..36){
-        val caixa = document.getElementById(i.toString()) as HTMLTableCellElement
+    for(j in 0..5){
+        for(i in 0..5){
+            val caixa = document.getElementById(j.toString() + i.toString()) as HTMLTableCellElement
 
-        if(caixa.className.equals("caixaFechada") && !caixa.textContent.toString().equals("*")){
-            isMina = false
-            break
+            if(caixa.className.equals("caixaFechada") && !caixa.textContent.toString().equals("*")){
+                isMina = false
+                break
+            }
         }
     }
 
@@ -100,17 +106,17 @@ fun verificaGanhador(){
 //funcao para deixar os numeros com cor (CSS)
 fun caixaNumero(x: HTMLTableCellElement){
     if(x.textContent.toString().equals("1")) x.className = "clicked num1"
-    if(x.textContent.toString().equals("2")) x.className = "clicked num2"
-    if(x.textContent.toString().equals("3")) x.className = "clicked num3"
-    if(x.textContent.toString().equals("4")) x.className = "clicked num4"
-    if(x.textContent.toString().equals("5")) x.className = "clicked num5"
-    if(x.textContent.toString().equals("6")) x.className = "clicked num6"
+    else if(x.textContent.toString().equals("2")) x.className = "clicked num2"
+    else if(x.textContent.toString().equals("3")) x.className = "clicked num3"
+    else if(x.textContent.toString().equals("4")) x.className = "clicked num4"
+    else if(x.textContent.toString().equals("5")) x.className = "clicked num5"
+    else if(x.textContent.toString().equals("6")) x.className = "clicked num6"
 }
 
 /*eh utilizado na funcao recursiva abaixo, para saber quais caixa já foram verificadas,
   dessa forma a funcao não entra em loop infinito!!!
  */
-var numMinas = mutableListOf<Int>()
+var minasExist = mutableListOf<String>()
 
 /* funcao recursiva, responsavel por abrir as caixas com valor '0', ou seja,
    sem minas ao redor....
@@ -120,138 +126,109 @@ var numMinas = mutableListOf<Int>()
    OBS: Utilizar um array de int foi a unica maneira de evitar que a recursao entre em um loop infinito entre duas caixas,
    pois ele só entra em determinada caixa se ela não estiver no array, ou seja, não esa amarrada em nenhuma recursão para trás...
 */
-fun caixaBranco(i: String, numAnt: MutableList<Int>) {
-    val caixa = document.getElementById(i) as HTMLTableCellElement
+fun caixaBranco(y: String, x: String) {
 
-    /* metodo para percorrer matriz e verificar se existem bombas da forma abaixo
-        caixa1 | caixa2 | caixa3
-        caixa4 |  caixa | caixa5
-        caixa6 | caixa7 | caixa8
-     */
-    val n = i.toInt() //para não precisar ficar chamando a funcao nos if abaixo
+    val caixa = document.getElementById(y + x) as HTMLTableCellElement
+    val j = y.toInt()
+    val i = x.toInt()
 
-    if(!numMinas.contains(n)) numMinas.add(n) //se o num nao ainda nao tiver na lista, adiciona
-
-    val caixa1 = document.getElementById((n - 7).toString())
-    val caixa2 = document.getElementById((n - 6).toString())
-    val caixa3 = document.getElementById((n - 5).toString())
-    val caixa4 = document.getElementById((n - 1).toString())
-    val caixa5 = document.getElementById((n + 1).toString())
-    val caixa6 = document.getElementById((n + 5).toString())
-    val caixa7 = document.getElementById((n + 6).toString())
-    val caixa8 = document.getElementById((n + 7).toString())
+    if(!minasExist.contains(y + x)) minasExist.add(y + x) //se o num nao ainda nao tiver na lista, adiciona
 
     caixa.className = "clicked num0" //deixando a caixa sem informacao (CSS)
 
-        if(n == 1){
-            if (caixa5!!.textContent.equals("0") && !numMinas.contains(n + 1)) caixaBranco((n + 1).toString(), numAnt)
-            if (caixa7!!.textContent.equals("0") && !numMinas.contains(n + 6)) caixaBranco((n + 6).toString(), numAnt)
-            if (caixa8!!.textContent.equals("0") && !numMinas.contains(n + 7)) caixaBranco((n + 7).toString(), numAnt)
+    if ((j - 1) >= 0 && (i - 1) >= 0 &&
+            document.getElementById((j - 1).toString() + (i - 1).toString())?.textContent.equals("0") &&
+            !minasExist.contains((j - 1).toString() + (i - 1).toString())) {
 
-            caixaNumero(caixa5 as HTMLTableCellElement)
-            caixaNumero(caixa7 as HTMLTableCellElement)
-            caixaNumero(caixa8 as HTMLTableCellElement)
-        } else if(n == 2 || n == 3 || n == 4 || n == 5){
-            if (caixa4!!.textContent.equals("0") && !numMinas.contains(n - 1)) caixaBranco((n - 1).toString(), numAnt)
-            if (caixa5!!.textContent.equals("0") && !numMinas.contains(n + 1)) caixaBranco((n + 1).toString(), numAnt)
-            if (caixa6!!.textContent.equals("0") && !numMinas.contains(n + 5)) caixaBranco((n + 5).toString(), numAnt)
-            if (caixa7!!.textContent.equals("0") && !numMinas.contains(n + 6)) caixaBranco((n + 6).toString(), numAnt)
-            if (caixa8!!.textContent.equals("0") && !numMinas.contains(n + 7)) caixaBranco((n + 7).toString(), numAnt)
+        caixaBranco((j - 1).toString(), (i - 1).toString())
+        abreCelulasRedor(j - 1, i - 1)
+    }
+    if ((j - 1) >= 0 &&
+            document.getElementById((j - 1).toString() + i.toString())?.textContent.equals("0") &&
+            !minasExist.contains((j - 1).toString() + i.toString())) {
 
-            caixaNumero(caixa4 as HTMLTableCellElement)
-            caixaNumero(caixa5 as HTMLTableCellElement)
-            caixaNumero(caixa6 as HTMLTableCellElement)
-            caixaNumero(caixa7 as HTMLTableCellElement)
-            caixaNumero(caixa8 as HTMLTableCellElement)
-        } else if(n == 7 || n == 13 || n == 19 || n == 25){
-            if (caixa2!!.textContent.equals("0") && !numMinas.contains(n - 6)) caixaBranco((n - 6).toString(), numAnt)
-            if (caixa3!!.textContent.equals("0") && !numMinas.contains(n - 5)) caixaBranco((n - 5).toString(), numAnt)
-            if (caixa5!!.textContent.equals("0") && !numMinas.contains(n + 1)) caixaBranco((n + 1).toString(), numAnt)
-            if (caixa7!!.textContent.equals("0") && !numMinas.contains(n + 6)) caixaBranco((n + 6).toString(), numAnt)
-            if (caixa8!!.textContent.equals("0") && !numMinas.contains(n + 7)) caixaBranco((n + 7).toString(), numAnt)
+        caixaBranco((j - 1).toString(), i.toString())
+        abreCelulasRedor(j - 1, i)
+    }
+    if ((j - 1) >= 0 && (i + 1) <= 5 &&
+            document.getElementById((j - 1).toString() + (i + 1).toString())?.textContent.equals("0") &&
+            !minasExist.contains((j - 1).toString() + (i + 1).toString())) {
 
-            caixaNumero(caixa2 as HTMLTableCellElement)
-            caixaNumero(caixa3 as HTMLTableCellElement)
-            caixaNumero(caixa5 as HTMLTableCellElement)
-            caixaNumero(caixa7 as HTMLTableCellElement)
-            caixaNumero(caixa8 as HTMLTableCellElement)
-        } else if(n == 6){
-            if (caixa4!!.textContent.equals("0") && !numMinas.contains(n - 1)) caixaBranco((n - 1).toString(), numAnt)
-            if (caixa6!!.textContent.equals("0") && !numMinas.contains(n + 5)) caixaBranco((n + 5).toString(), numAnt)
-            if (caixa7!!.textContent.equals("0") && !numMinas.contains(n + 6)) caixaBranco((n + 6).toString(), numAnt)
+        caixaBranco((j - 1).toString(), (i + 1).toString())
+        abreCelulasRedor(j - 1, i + 1)
+    }
+    if ((i - 1) >= 0 &&
+            document.getElementById(j.toString() + (i - 1).toString())?.textContent.equals("0") &&
+            !minasExist.contains(j.toString() + (i - 1).toString())) {
 
-            caixaNumero(caixa4 as HTMLTableCellElement)
-            caixaNumero(caixa6 as HTMLTableCellElement)
-            caixaNumero(caixa7 as HTMLTableCellElement)
-        } else if(n == 12 || n == 18 || n == 24 || n == 30){
-            if (caixa1!!.textContent.equals("0") && !numMinas.contains(n - 7)) caixaBranco((n - 7).toString(), numAnt)
-            if (caixa2!!.textContent.equals("0") && !numMinas.contains(n - 6)) caixaBranco((n - 6).toString(), numAnt)
-            if (caixa4!!.textContent.equals("0") && !numMinas.contains(n - 1)) caixaBranco((n - 1).toString(), numAnt)
-            if (caixa6!!.textContent.equals("0") && !numMinas.contains(n + 5)) caixaBranco((n + 5).toString(), numAnt)
-            if (caixa7!!.textContent.equals("0") && !numMinas.contains(n + 5)) caixaBranco((n + 6).toString(), numAnt)
+        caixaBranco(j.toString(), (i - 1).toString())
+        abreCelulasRedor(j, i - 1)
+    }
+    if ((i + 1) <= 5 && document.getElementById(j.toString() + (i + 1).toString())?.textContent.equals("0") &&
+            !minasExist.contains(j.toString() + (i + 1).toString())) {
 
-            caixaNumero(caixa1 as HTMLTableCellElement)
-            caixaNumero(caixa2 as HTMLTableCellElement)
-            caixaNumero(caixa4 as HTMLTableCellElement)
-            caixaNumero(caixa6 as HTMLTableCellElement)
-            caixaNumero(caixa7 as HTMLTableCellElement)
-        } else if(n == 32 || n == 33 || n == 34 || n == 35){
-            if (caixa1!!.textContent.equals("0") && !numMinas.contains(n - 7)) caixaBranco((n - 7).toString(), numAnt)
-            if (caixa2!!.textContent.equals("0") && !numMinas.contains(n - 6)) caixaBranco((n - 6).toString(), numAnt)
-            if (caixa3!!.textContent.equals("0") && !numMinas.contains(n - 5)) caixaBranco((n - 5).toString(), numAnt)
-            if (caixa4!!.textContent.equals("0") && !numMinas.contains(n - 1)) caixaBranco((n - 1).toString(), numAnt)
-            if (caixa5!!.textContent.equals("0") && !numMinas.contains(n + 1)) caixaBranco((n + 1).toString(), numAnt)
+        caixaBranco(j.toString(), (i + 1).toString())
+       abreCelulasRedor(j, i + 1)
+    }
+    if ((j + 1) <= 5 && (i - 1) >= 0 &&
+            document.getElementById((j + 1).toString() + (i - 1).toString())?.textContent.equals("0") &&
+            !minasExist.contains((j + 1).toString() + (i - 1).toString())) {
 
-            caixaNumero(caixa1 as HTMLTableCellElement)
-            caixaNumero(caixa2 as HTMLTableCellElement)
-            caixaNumero(caixa3 as HTMLTableCellElement)
-            caixaNumero(caixa4 as HTMLTableCellElement)
-            caixaNumero(caixa5 as HTMLTableCellElement)
-        } else if(n == 31){
-            if (caixa2!!.textContent.equals("0") && !numMinas.contains(n - 6)) caixaBranco((n - 6).toString(), numAnt)
-            if (caixa3!!.textContent.equals("0") && !numMinas.contains(n - 5)) caixaBranco((n - 5).toString(), numAnt)
-            if (caixa5!!.textContent.equals("0") && !numMinas.contains(n + 1)) caixaBranco((n + 1).toString(), numAnt)
+        caixaBranco((j + 1).toString(), (i - 1).toString())
+        abreCelulasRedor(j + 1, i - 1)
+    }
+    if ((j + 1) <= 5 &&
+            document.getElementById((j + 1).toString() + i.toString())?.textContent.equals("0") &&
+            !minasExist.contains((j + 1).toString() + i.toString())) {
 
-            caixaNumero(caixa2 as HTMLTableCellElement)
-            caixaNumero(caixa3 as HTMLTableCellElement)
-            caixaNumero(caixa5 as HTMLTableCellElement)
-        } else if(n == 36){
-            if (caixa1!!.textContent.equals("0") && !numMinas.contains(n - 7)) caixaBranco((n - 7).toString(), numAnt)
-            if (caixa2!!.textContent.equals("0") && !numMinas.contains(n - 6)) caixaBranco((n - 6).toString(), numAnt)
-            if (caixa4!!.textContent.equals("0") && !numMinas.contains(n - 1)) caixaBranco((n - 1).toString(), numAnt)
+        caixaBranco((j + 1).toString(), i.toString())
+        abreCelulasRedor(j + 1, i)
+    }
+    if ((j + 1) <= 5 && (i + 1) >= 0 &&
+            document.getElementById((j + 1).toString() + (i + 1).toString())?.textContent.equals("0") &&
+            !minasExist.contains((j + 1).toString() + (i + 1).toString())) {
 
-            caixaNumero(caixa1 as HTMLTableCellElement)
-            caixaNumero(caixa2 as HTMLTableCellElement)
-            caixaNumero(caixa4 as HTMLTableCellElement)
-        } else {
-            if (caixa1!!.textContent.equals("0") && !numMinas.contains(n - 7)) caixaBranco((n - 7).toString(), numAnt)
-            if (caixa2!!.textContent.equals("0") && !numMinas.contains(n - 6)) caixaBranco((n - 6).toString(), numAnt)
-            if (caixa3!!.textContent.equals("0") && !numMinas.contains(n - 5)) caixaBranco((n - 5).toString(), numAnt)
-            if (caixa4!!.textContent.equals("0") && !numMinas.contains(n - 1)) caixaBranco((n - 1).toString(), numAnt)
-            if (caixa5!!.textContent.equals("0") && !numMinas.contains(n + 1)) caixaBranco((n + 1).toString(), numAnt)
-            if (caixa6!!.textContent.equals("0") && !numMinas.contains(n + 5)) caixaBranco((n + 5).toString(), numAnt)
-            if (caixa7!!.textContent.equals("0") && !numMinas.contains(n + 6)) caixaBranco((n + 6).toString(), numAnt)
-            if (caixa8!!.textContent.equals("0") && !numMinas.contains(n + 7)) caixaBranco((n + 7).toString(), numAnt)
+        caixaBranco((j + 1).toString(), (i + 1).toString())
+        abreCelulasRedor(j + 1, i + 1)
+    }
+    abreCelulasRedor(j, i)
+}
 
-            caixaNumero(caixa1 as HTMLTableCellElement)
-            caixaNumero(caixa2 as HTMLTableCellElement)
-            caixaNumero(caixa3 as HTMLTableCellElement)
-            caixaNumero(caixa4 as HTMLTableCellElement)
-            caixaNumero(caixa5 as HTMLTableCellElement)
-            caixaNumero(caixa6 as HTMLTableCellElement)
-            caixaNumero(caixa7 as HTMLTableCellElement)
-            caixaNumero(caixa8 as HTMLTableCellElement)
-        }
-
+fun abreCelulasRedor(j: Int, i: Int){
+    if ((j - 1) >= 0 && (i - 1) >= 0) {
+        caixaNumero(document.getElementById((j-1).toString() + (i-1).toString()) as HTMLTableCellElement)
+    }
+    if ((j - 1) >= 0) {
+        caixaNumero(document.getElementById((j-1).toString() + i.toString()) as HTMLTableCellElement)
+    }
+    if ((j - 1) >= 0 && (i + 1) <= 5) {
+        caixaNumero(document.getElementById((j-1).toString() + (i+1).toString()) as HTMLTableCellElement)
+    }
+    if ((i - 1) >= 0) {
+        caixaNumero(document.getElementById(j.toString() + (i-1).toString()) as HTMLTableCellElement)
+    }
+    if ((i + 1) <= 5) {
+        caixaNumero(document.getElementById(j.toString() + (i+1).toString()) as HTMLTableCellElement)
+    }
+    if ((j + 1) <= 5 && (i - 1) >= 0) {
+        caixaNumero(document.getElementById((j+1).toString() + (i-1).toString()) as HTMLTableCellElement)
+    }
+    if ((j + 1) <= 5) {
+        caixaNumero(document.getElementById((j+1).toString() + i.toString()) as HTMLTableCellElement)
+    }
+    if ((j + 1) <= 5 && (i + 1) >= 0 && (i + 1) <=5) {
+        caixaNumero(document.getElementById((j+1).toString() + (i+1).toString()) as HTMLTableCellElement)
+    }
 }
 
 fun criaMinasCampo(numMinas: Int){
     if(numMinas == 0)
         return
     else {
-        val mina = Random.nextInt(1, 36)
+        val minay = Random.nextInt(0, 5)
+        val minax = Random.nextInt(0, 5)
 
-        val caixa = document.getElementById(mina.toString())
+        val caixa = document.getElementById(minay.toString() + minax.toString())
 
         //so vai adicinar * caso nao haja mina ali
         if (!caixa?.textContent.equals("*")) {
@@ -264,72 +241,42 @@ fun criaMinasCampo(numMinas: Int){
 fun varreCampo(){
     //TODO TENTAR FAZER UMA RECURSAO
     //percorre todas as caixas para verificar se existem minas ao redor
-    for(i in 1..36){
-        //caixa central
-        val caixa = document.getElementById(i.toString())
+    for(j in 0..5){
+        for(i in 0..5){
+            val caixa = document.getElementById(j.toString() + i.toString())
 
-        /* metodo para percorrer matriz e verificar se existem bombas da forma abaixo
-            caixa1 | caixa2 | caixa3
-            caixa4 |  caixa | caixa5
-            caixa6 | caixa7 | caixa8
-         */
-        val caixa1 = document.getElementById((i - 7).toString())
-        val caixa2 = document.getElementById((i - 6).toString())
-        val caixa3 = document.getElementById((i - 5).toString())
-        val caixa4 = document.getElementById((i - 1).toString())
-        val caixa5 = document.getElementById((i + 1).toString())
-        val caixa6 = document.getElementById((i + 5).toString())
-        val caixa7 = document.getElementById((i + 6).toString())
-        val caixa8 = document.getElementById((i + 7).toString())
-        var numMinas = 0
+            if(!caixa?.textContent.equals("*")) {
+                if ((j - 1) >= 0 && (i - 1) >= 0 &&
+                        document.getElementById((j - 1).toString() + (i - 1).toString())?.textContent.equals("*"))
+                    caixa!!.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
 
-        if(!caixa?.textContent.equals("*")) {
-            if(i == 1){
-                if (caixa5?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa7?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa8?.textContent.equals("*")) numMinas = numMinas + 1
-            } else if(i == 7 || i == 13 || i == 19 || i == 25){
-                if (caixa2?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa3?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa5?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa7?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa8?.textContent.equals("*")) numMinas = numMinas + 1
-            } else if(i == 6){
-                if (caixa4?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa6?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa7?.textContent.equals("*")) numMinas = numMinas + 1
-            } else if(i == 12 || i == 18 || i == 24 || i == 30){
-                if (caixa1?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa2?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa4?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa6?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa7?.textContent.equals("*")) numMinas = numMinas + 1
-            } else if(i == 32 || i == 33 || i == 34 || i == 35){
-                if (caixa1?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa2?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa3?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa4?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa5?.textContent.equals("*")) numMinas = numMinas + 1
-            } else if(i == 31){
-                if (caixa2?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa3?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa5?.textContent.equals("*")) numMinas = numMinas + 1
-            } else if(i == 36){
-                if (caixa1?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa2?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa4?.textContent.equals("*")) numMinas = numMinas + 1
-            } else {
-                if (caixa1?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa2?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa3?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa4?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa5?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa6?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa7?.textContent.equals("*")) numMinas = numMinas + 1
-                if (caixa8?.textContent.equals("*")) numMinas = numMinas + 1
+                if ((j - 1) >= 0 &&
+                        document.getElementById((j - 1).toString() + (i).toString())?.textContent.equals("*"))
+                    caixa!!.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
+
+                if ((j - 1) >= 0 && (i + 1) <= 5 &&
+                        document.getElementById((j - 1).toString() + (i + 1).toString())?.textContent.equals("*"))
+                    caixa!!.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
+
+                if ((i - 1) >= 0 &&
+                        document.getElementById((j).toString() + (i - 1).toString())?.textContent.equals("*"))
+                    caixa!!.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
+
+                if ((i + 1) <= 5 && document.getElementById((j).toString() + (i + 1).toString())?.textContent.equals("*")) {
+                    caixa!!.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
+                }
+                if ((j + 1) <= 5 && (i - 1) >= 0 &&
+                        document.getElementById((j + 1).toString() + (i - 1).toString())?.textContent.equals("*"))
+                    caixa!!.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
+
+                if ((j + 1) <= 5 &&
+                        document.getElementById((j + 1).toString() + (i).toString())?.textContent.equals("*"))
+                    caixa!!.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
+
+                if ((j + 1) <= 5 && (i + 1) >= 0 &&
+                        document.getElementById((j + 1).toString() + (i + 1).toString())?.textContent.equals("*"))
+                    caixa!!.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
             }
-
-            caixa!!.innerHTML = numMinas.toString()
         }
     }
 }
@@ -361,6 +308,8 @@ fun informaNumMinas(num: Int){
   -> o resto é tudo indiferente, ou seja, tem que verificar todas as caixa ao redor (-7, -6, -5, -1, +1, +5, +6 e +7)
 
  */
+
+//TODO fazer como plano cartao cartesiano 00, 11, 22, 44, 55
 fun main() {
     val numDeMinas = 7
 
