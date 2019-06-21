@@ -20,12 +20,16 @@ var CampoMinado = function (_, Kotlin) {
   }
   function posivelMina(pos) {
     var tmp$;
-    var x = Kotlin.isType(tmp$ = document.getElementById(pos), HTMLTableCellElement) ? tmp$ : throwCCE();
+    var x = Kotlin.isType(tmp$ = getElement(pos), HTMLTableCellElement) ? tmp$ : throwCCE();
     x.innerHTML = imagemBandeira();
+  }
+  function getElement(id) {
+    var tmp$;
+    return Kotlin.isType(tmp$ = document.getElementById(id), HTMLElement) ? tmp$ : throwCCE();
   }
   function resultadoJogo(result) {
     var tmp$;
-    var info = Kotlin.isType(tmp$ = document.getElementById('resultJogo'), HTMLDivElement) ? tmp$ : throwCCE();
+    var info = Kotlin.isType(tmp$ = getElement('resultJogo'), HTMLDivElement) ? tmp$ : throwCCE();
     if (result) {
       info.innerHTML = trimMargin('Ganhou :)\n        <p>\n    ');
     }
@@ -42,14 +46,14 @@ var CampoMinado = function (_, Kotlin) {
     var tmp$;
     for (var j = 0; j <= 5; j++) {
       for (var i = 0; i <= 5; i++) {
-        var caixa = Kotlin.isType(tmp$ = document.getElementById(j.toString() + i.toString()), HTMLTableCellElement) ? tmp$ : throwCCE();
+        var caixa = Kotlin.isType(tmp$ = getElement(j.toString() + i.toString()), HTMLTableCellElement) ? tmp$ : throwCCE();
         caixa.onclick = desabilitaCliqueMouse$lambda;
       }
     }
   }
   function abrirCelula(pos) {
     var tmp$, tmp$_0;
-    var x = Kotlin.isType(tmp$ = document.getElementById(pos), HTMLTableCellElement) ? tmp$ : throwCCE();
+    var x = Kotlin.isType(tmp$ = getElement(pos), HTMLTableCellElement) ? tmp$ : throwCCE();
     if (equals(toString(x.textContent), '0'))
       caixaBranco(String.fromCharCode(pos.charCodeAt(0)), String.fromCharCode(pos.charCodeAt(1)));
     else if (equals(toString(x.textContent), '*')) {
@@ -68,23 +72,19 @@ var CampoMinado = function (_, Kotlin) {
     }
      else
       caixaNumero(x);
-    verificaGanhador();
+    if (verificaGanhador())
+      resultadoJogo(true);
   }
   function verificaGanhador() {
     var tmp$;
-    var isMina = true;
     for (var j = 0; j <= 5; j++) {
       for (var i = 0; i <= 5; i++) {
-        var caixa = Kotlin.isType(tmp$ = document.getElementById(j.toString() + i.toString()), HTMLTableCellElement) ? tmp$ : throwCCE();
-        if (equals(caixa.className, 'caixaFechada') && !equals(toString(caixa.textContent), '*')) {
-          isMina = false;
-          break;
-        }
+        var caixa = Kotlin.isType(tmp$ = getElement(j.toString() + i.toString()), HTMLTableCellElement) ? tmp$ : throwCCE();
+        if (equals(caixa.className, 'caixaFechada') && !equals(toString(caixa.textContent), '*'))
+          return false;
       }
     }
-    if (isMina === true) {
-      resultadoJogo(true);
-    }
+    return true;
   }
   function caixaNumero(x) {
     if (equals(toString(x.textContent), '1'))
@@ -102,42 +102,42 @@ var CampoMinado = function (_, Kotlin) {
   }
   var minasExist;
   function caixaBranco(y, x) {
-    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7;
-    var caixa = Kotlin.isType(tmp$ = document.getElementById(y + x), HTMLTableCellElement) ? tmp$ : throwCCE();
+    var tmp$;
+    var caixa = Kotlin.isType(tmp$ = getElement(y + x), HTMLTableCellElement) ? tmp$ : throwCCE();
     var j = toInt(y);
     var i = toInt(x);
     if (!minasExist.contains_11rb$(y + x))
       minasExist.add_11rb$(y + x);
     caixa.className = 'clicked num0';
-    if ((j - 1 | 0) >= 0 && (i - 1 | 0) >= 0 && equals_0((tmp$_0 = document.getElementById((j - 1 | 0).toString() + (i - 1 | 0).toString())) != null ? tmp$_0.textContent : null, '0') && !minasExist.contains_11rb$((j - 1 | 0).toString() + (i - 1 | 0).toString())) {
+    if ((j - 1 | 0) >= 0 && (i - 1 | 0) >= 0 && equals_0(getElement((j - 1 | 0).toString() + (i - 1 | 0).toString()).textContent, '0') && !minasExist.contains_11rb$((j - 1 | 0).toString() + (i - 1 | 0).toString())) {
       caixaBranco((j - 1 | 0).toString(), (i - 1 | 0).toString());
       abreCelulasRedor(j - 1 | 0, i - 1 | 0);
     }
-    if ((j - 1 | 0) >= 0 && equals_0((tmp$_1 = document.getElementById((j - 1 | 0).toString() + i.toString())) != null ? tmp$_1.textContent : null, '0') && !minasExist.contains_11rb$((j - 1 | 0).toString() + i.toString())) {
+    if ((j - 1 | 0) >= 0 && equals_0(getElement((j - 1 | 0).toString() + i.toString()).textContent, '0') && !minasExist.contains_11rb$((j - 1 | 0).toString() + i.toString())) {
       caixaBranco((j - 1 | 0).toString(), i.toString());
       abreCelulasRedor(j - 1 | 0, i);
     }
-    if ((j - 1 | 0) >= 0 && (i + 1 | 0) <= 5 && equals_0((tmp$_2 = document.getElementById((j - 1 | 0).toString() + (i + 1 | 0).toString())) != null ? tmp$_2.textContent : null, '0') && !minasExist.contains_11rb$((j - 1 | 0).toString() + (i + 1 | 0).toString())) {
+    if ((j - 1 | 0) >= 0 && (i + 1 | 0) <= 5 && equals_0(getElement((j - 1 | 0).toString() + (i + 1 | 0).toString()).textContent, '0') && !minasExist.contains_11rb$((j - 1 | 0).toString() + (i + 1 | 0).toString())) {
       caixaBranco((j - 1 | 0).toString(), (i + 1 | 0).toString());
       abreCelulasRedor(j - 1 | 0, i + 1 | 0);
     }
-    if ((i - 1 | 0) >= 0 && equals_0((tmp$_3 = document.getElementById(j.toString() + (i - 1 | 0).toString())) != null ? tmp$_3.textContent : null, '0') && !minasExist.contains_11rb$(j.toString() + (i - 1 | 0).toString())) {
+    if ((i - 1 | 0) >= 0 && equals_0(getElement(j.toString() + (i - 1 | 0).toString()).textContent, '0') && !minasExist.contains_11rb$(j.toString() + (i - 1 | 0).toString())) {
       caixaBranco(j.toString(), (i - 1 | 0).toString());
       abreCelulasRedor(j, i - 1 | 0);
     }
-    if ((i + 1 | 0) <= 5 && equals_0((tmp$_4 = document.getElementById(j.toString() + (i + 1 | 0).toString())) != null ? tmp$_4.textContent : null, '0') && !minasExist.contains_11rb$(j.toString() + (i + 1 | 0).toString())) {
+    if ((i + 1 | 0) <= 5 && equals_0(getElement(j.toString() + (i + 1 | 0).toString()).textContent, '0') && !minasExist.contains_11rb$(j.toString() + (i + 1 | 0).toString())) {
       caixaBranco(j.toString(), (i + 1 | 0).toString());
       abreCelulasRedor(j, i + 1 | 0);
     }
-    if ((j + 1 | 0) <= 5 && (i - 1 | 0) >= 0 && equals_0((tmp$_5 = document.getElementById((j + 1 | 0).toString() + (i - 1 | 0).toString())) != null ? tmp$_5.textContent : null, '0') && !minasExist.contains_11rb$((j + 1 | 0).toString() + (i - 1 | 0).toString())) {
+    if ((j + 1 | 0) <= 5 && (i - 1 | 0) >= 0 && equals_0(getElement((j + 1 | 0).toString() + (i - 1 | 0).toString()).textContent, '0') && !minasExist.contains_11rb$((j + 1 | 0).toString() + (i - 1 | 0).toString())) {
       caixaBranco((j + 1 | 0).toString(), (i - 1 | 0).toString());
       abreCelulasRedor(j + 1 | 0, i - 1 | 0);
     }
-    if ((j + 1 | 0) <= 5 && equals_0((tmp$_6 = document.getElementById((j + 1 | 0).toString() + i.toString())) != null ? tmp$_6.textContent : null, '0') && !minasExist.contains_11rb$((j + 1 | 0).toString() + i.toString())) {
+    if ((j + 1 | 0) <= 5 && equals_0(getElement((j + 1 | 0).toString() + i.toString()).textContent, '0') && !minasExist.contains_11rb$((j + 1 | 0).toString() + i.toString())) {
       caixaBranco((j + 1 | 0).toString(), i.toString());
       abreCelulasRedor(j + 1 | 0, i);
     }
-    if ((j + 1 | 0) <= 5 && (i + 1 | 0) >= 0 && equals_0((tmp$_7 = document.getElementById((j + 1 | 0).toString() + (i + 1 | 0).toString())) != null ? tmp$_7.textContent : null, '0') && !minasExist.contains_11rb$((j + 1 | 0).toString() + (i + 1 | 0).toString())) {
+    if ((j + 1 | 0) <= 5 && (i + 1 | 0) >= 0 && equals_0(getElement((j + 1 | 0).toString() + (i + 1 | 0).toString()).textContent, '0') && !minasExist.contains_11rb$((j + 1 | 0).toString() + (i + 1 | 0).toString())) {
       caixaBranco((j + 1 | 0).toString(), (i + 1 | 0).toString());
       abreCelulasRedor(j + 1 | 0, i + 1 | 0);
     }
@@ -146,39 +146,39 @@ var CampoMinado = function (_, Kotlin) {
   function abreCelulasRedor(j, i) {
     var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6;
     if ((j - 1 | 0) >= 0 && (i - 1 | 0) >= 0) {
-      caixaNumero(Kotlin.isType(tmp$ = document.getElementById((j - 1 | 0).toString() + (i - 1 | 0).toString()), HTMLTableCellElement) ? tmp$ : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$ = getElement((j - 1 | 0).toString() + (i - 1 | 0).toString()), HTMLTableCellElement) ? tmp$ : throwCCE());
     }
     if ((j - 1 | 0) >= 0) {
-      caixaNumero(Kotlin.isType(tmp$_0 = document.getElementById((j - 1 | 0).toString() + i.toString()), HTMLTableCellElement) ? tmp$_0 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_0 = getElement((j - 1 | 0).toString() + i.toString()), HTMLTableCellElement) ? tmp$_0 : throwCCE());
     }
     if ((j - 1 | 0) >= 0 && (i + 1 | 0) <= 5) {
-      caixaNumero(Kotlin.isType(tmp$_1 = document.getElementById((j - 1 | 0).toString() + (i + 1 | 0).toString()), HTMLTableCellElement) ? tmp$_1 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_1 = getElement((j - 1 | 0).toString() + (i + 1 | 0).toString()), HTMLTableCellElement) ? tmp$_1 : throwCCE());
     }
     if ((i - 1 | 0) >= 0) {
-      caixaNumero(Kotlin.isType(tmp$_2 = document.getElementById(j.toString() + (i - 1 | 0).toString()), HTMLTableCellElement) ? tmp$_2 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_2 = getElement(j.toString() + (i - 1 | 0).toString()), HTMLTableCellElement) ? tmp$_2 : throwCCE());
     }
     if ((i + 1 | 0) <= 5) {
-      caixaNumero(Kotlin.isType(tmp$_3 = document.getElementById(j.toString() + (i + 1 | 0).toString()), HTMLTableCellElement) ? tmp$_3 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_3 = getElement(j.toString() + (i + 1 | 0).toString()), HTMLTableCellElement) ? tmp$_3 : throwCCE());
     }
     if ((j + 1 | 0) <= 5 && (i - 1 | 0) >= 0) {
-      caixaNumero(Kotlin.isType(tmp$_4 = document.getElementById((j + 1 | 0).toString() + (i - 1 | 0).toString()), HTMLTableCellElement) ? tmp$_4 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_4 = getElement((j + 1 | 0).toString() + (i - 1 | 0).toString()), HTMLTableCellElement) ? tmp$_4 : throwCCE());
     }
     if ((j + 1 | 0) <= 5) {
-      caixaNumero(Kotlin.isType(tmp$_5 = document.getElementById((j + 1 | 0).toString() + i.toString()), HTMLTableCellElement) ? tmp$_5 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_5 = getElement((j + 1 | 0).toString() + i.toString()), HTMLTableCellElement) ? tmp$_5 : throwCCE());
     }
     if ((j + 1 | 0) <= 5 && (i + 1 | 0) >= 0 && (i + 1 | 0) <= 5) {
-      caixaNumero(Kotlin.isType(tmp$_6 = document.getElementById((j + 1 | 0).toString() + (i + 1 | 0).toString()), HTMLTableCellElement) ? tmp$_6 : throwCCE());
+      caixaNumero(Kotlin.isType(tmp$_6 = getElement((j + 1 | 0).toString() + (i + 1 | 0).toString()), HTMLTableCellElement) ? tmp$_6 : throwCCE());
     }
   }
   function criaMinasCampo(numMinas) {
     if (numMinas === 0)
       return;
     else {
-      var minay = Random.Default.nextInt_vux9f0$(0, 5);
-      var minax = Random.Default.nextInt_vux9f0$(0, 5);
-      var caixa = document.getElementById(minay.toString() + minax.toString());
-      if (!equals_0(caixa != null ? caixa.textContent : null, '*')) {
-        ensureNotNull(caixa).innerHTML = '*';
+      var minaY = Random.Default.nextInt_vux9f0$(0, 5);
+      var minaX = Random.Default.nextInt_vux9f0$(0, 5);
+      var caixa = getElement(minaY.toString() + minaX.toString());
+      if (!equals_0(caixa.textContent, '*')) {
+        caixa.innerHTML = '*';
         criaMinasCampo(numMinas - 1 | 0);
       }
        else
@@ -189,32 +189,32 @@ var CampoMinado = function (_, Kotlin) {
     var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6;
     for (var j = 0; j <= 5; j++) {
       for (var i = 0; i <= 5; i++) {
-        var caixa = document.getElementById(j.toString() + i.toString());
-        if (!equals_0(caixa != null ? caixa.textContent : null, '*')) {
+        var caixa = getElement(j.toString() + i.toString());
+        if (!equals_0(caixa.textContent, '*')) {
           if ((j - 1 | 0) >= 0 && (i - 1 | 0) >= 0 && equals_0((tmp$ = document.getElementById((j - 1 | 0).toString() + (i - 1 | 0).toString())) != null ? tmp$.textContent : null, '*'))
-            ensureNotNull(caixa).innerHTML = (toInt(ensureNotNull(caixa.textContent)) + 1 | 0).toString();
+            caixa.innerHTML = (toInt(ensureNotNull(caixa.textContent)) + 1 | 0).toString();
           if ((j - 1 | 0) >= 0 && equals_0((tmp$_0 = document.getElementById((j - 1 | 0).toString() + i.toString())) != null ? tmp$_0.textContent : null, '*'))
-            ensureNotNull(caixa).innerHTML = (toInt(ensureNotNull(caixa.textContent)) + 1 | 0).toString();
+            caixa.innerHTML = (toInt(ensureNotNull(caixa.textContent)) + 1 | 0).toString();
           if ((j - 1 | 0) >= 0 && (i + 1 | 0) <= 5 && equals_0((tmp$_1 = document.getElementById((j - 1 | 0).toString() + (i + 1 | 0).toString())) != null ? tmp$_1.textContent : null, '*'))
-            ensureNotNull(caixa).innerHTML = (toInt(ensureNotNull(caixa.textContent)) + 1 | 0).toString();
+            caixa.innerHTML = (toInt(ensureNotNull(caixa.textContent)) + 1 | 0).toString();
           if ((i - 1 | 0) >= 0 && equals_0((tmp$_2 = document.getElementById(j.toString() + (i - 1 | 0).toString())) != null ? tmp$_2.textContent : null, '*'))
-            ensureNotNull(caixa).innerHTML = (toInt(ensureNotNull(caixa.textContent)) + 1 | 0).toString();
+            caixa.innerHTML = (toInt(ensureNotNull(caixa.textContent)) + 1 | 0).toString();
           if ((i + 1 | 0) <= 5 && equals_0((tmp$_3 = document.getElementById(j.toString() + (i + 1 | 0).toString())) != null ? tmp$_3.textContent : null, '*')) {
-            ensureNotNull(caixa).innerHTML = (toInt(ensureNotNull(caixa.textContent)) + 1 | 0).toString();
+            caixa.innerHTML = (toInt(ensureNotNull(caixa.textContent)) + 1 | 0).toString();
           }
           if ((j + 1 | 0) <= 5 && (i - 1 | 0) >= 0 && equals_0((tmp$_4 = document.getElementById((j + 1 | 0).toString() + (i - 1 | 0).toString())) != null ? tmp$_4.textContent : null, '*'))
-            ensureNotNull(caixa).innerHTML = (toInt(ensureNotNull(caixa.textContent)) + 1 | 0).toString();
+            caixa.innerHTML = (toInt(ensureNotNull(caixa.textContent)) + 1 | 0).toString();
           if ((j + 1 | 0) <= 5 && equals_0((tmp$_5 = document.getElementById((j + 1 | 0).toString() + i.toString())) != null ? tmp$_5.textContent : null, '*'))
-            ensureNotNull(caixa).innerHTML = (toInt(ensureNotNull(caixa.textContent)) + 1 | 0).toString();
+            caixa.innerHTML = (toInt(ensureNotNull(caixa.textContent)) + 1 | 0).toString();
           if ((j + 1 | 0) <= 5 && (i + 1 | 0) >= 0 && equals_0((tmp$_6 = document.getElementById((j + 1 | 0).toString() + (i + 1 | 0).toString())) != null ? tmp$_6.textContent : null, '*'))
-            ensureNotNull(caixa).innerHTML = (toInt(ensureNotNull(caixa.textContent)) + 1 | 0).toString();
+            caixa.innerHTML = (toInt(ensureNotNull(caixa.textContent)) + 1 | 0).toString();
         }
       }
     }
   }
   function informaNumMinas(num) {
     var tmp$;
-    var info = Kotlin.isType(tmp$ = document.getElementById('infoJogo'), HTMLDivElement) ? tmp$ : throwCCE();
+    var info = Kotlin.isType(tmp$ = getElement('infoJogo'), HTMLDivElement) ? tmp$ : throwCCE();
     info.innerHTML = info.innerHTML + trimIndent('\n' + '        : ' + num + '\n' + '    ');
   }
   function main() {
@@ -226,6 +226,7 @@ var CampoMinado = function (_, Kotlin) {
   _.imagemMina = imagemMina;
   _.imagemBandeira = imagemBandeira;
   _.posivelMina = posivelMina;
+  _.getElement_61zpoe$ = getElement;
   _.resultadoJogo_6taknv$ = resultadoJogo;
   _.desabilitaCliqueMouse = desabilitaCliqueMouse;
   _.abrirCelula = abrirCelula;
