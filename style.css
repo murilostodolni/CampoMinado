@@ -21,6 +21,12 @@ td
     color: #C1C1C1;
 }
 
+.bandeira:not(:placeholder-shown){
+    background-color: darkred;
+    border		: 3px solid darkred;
+    color: darkred;
+}
+
 td:hover{
     background-color: #939393;
     color: #939393;

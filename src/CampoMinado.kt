@@ -1,5 +1,4 @@
 import org.w3c.dom.*
-import org.w3c.dom.events.MouseEvent
 import kotlin.browser.document
 import kotlin.random.Random
 
@@ -7,13 +6,12 @@ fun imagemMina() = """<img width="30" height="30" src="img/bomba.png"/>"""
 
 fun imagemBandeira() = """<img width="30" height="30" src="img/bandeira.png"/>"""
 
-//TODO tentar fazer bandeira
+//TODO tentar colocar foto bandeira
 @JsName("posivelMina")
 fun posivelMina(pos: String){
     val x = getElement(pos) as HTMLTableCellElement
 
-    //x.className="mina-clicked"
-    x.innerHTML = imagemBandeira()
+    x.className = "bandeira"
 }
 
 //fun para nao precisar ficar fazendo document.getElementById(id) toda vez
@@ -25,56 +23,58 @@ fun resultadoJogo(result: Boolean){
     val info = getElement("resultJogo") as HTMLDivElement
 
     if(result){
-        info.innerHTML = """Ganhou :)
+        info.innerHTML = """PARABÉNS!!! Você ganhouuuu :)
         <p>
     """.trimMargin()
     } else {
-        info.innerHTML = """Perdeu :(
+        info.innerHTML = """Perdeuuuuuuuuuuuuuuuuu :(
         <p>
     """.trimMargin()
     }
     info.innerHTML += "<a href=\"campo-minado.html\"><button onclick=\"campo-minado.html\">Jogar Novamente</button></a>"
 
-    desabilitaCliqueMouse()
+    desabilitaClickMouse()
 }
 
 /*Funcao responsavel por bloquear cliques apos ganhar ou perder a partida */
-fun desabilitaCliqueMouse(){
-    for(j in 0..5){
-        for(i in 0..5){
-            val caixa = getElement(j.toString() + i.toString()) as HTMLTableCellElement
-            caixa.onclick= {""}
-        }
-    }
+fun desabilitaClickMouse(){
+    val j = generateSequence(0, {x -> x+1})
+    val i = generateSequence(0, {x -> x+1})
+    j.take(6).forEach { x -> i.take(6).forEach {  y ->
+        val caixa = getElement(x.toString() + y.toString()) as HTMLTableCellElement;
+        caixa.onclick= {""};
+    } }
 }
 
+/* se a caixa estiver fechada, vai colocar uma bandeira, se for uma bandeira, vai abrir a caixa! */
 @JsName("abrirCelula")
 fun abrirCelula(pos: String){
-    val x = getElement(pos) as HTMLTableCellElement
+    val caixa = getElement(pos) as HTMLTableCellElement
 
-    /*dependendo do numero de minas que tiver ao redor,
-      vai mudar a classe para colorir os numeros!
-     */
-    if(x.textContent.toString().equals("0")) caixaBranco(pos.get(0).toString(), pos.get(1).toString())
+    //if(caixa.className.equals("caixaFechada")){
+    //    posivelMina(pos)
 
-    else if(x.textContent.toString().equals("*")){ //verifica se eh uma mina
-        x.className="mina-clicked"
-        x.innerHTML = imagemMina()
+    //} else if(caixa.className.equals("bandeira")) {
+        /* dependendo do numero de minas que tiver ao redor, vai mudar a classe para colorir os numeros! */
+        if (caixa.textContent.toString().equals("0")) caixaBranco(pos.get(0).toString(), pos.get(1).toString())
+        else if (caixa.textContent.toString().equals("*")) { //verifica se eh uma mina
+            caixa.className = "mina-clicked"
+            caixa.innerHTML = imagemMina()
 
-        for(j in 0..5){
-            for(i in 0..5){
-                val minaRest = document.getElementById(j.toString() + i.toString()) as HTMLTableCellElement
+            val j = generateSequence(0, {x -> x+1})
+            val i = generateSequence(0, {x -> x+1})
+            j.take(6).forEach { x -> i.take(6).forEach { y ->
+                val minaRest = document.getElementById(x.toString() + y.toString()) as HTMLTableCellElement
 
-                if(minaRest.textContent.toString().equals("*")) {
+                if (minaRest.textContent.toString().equals("*")) {
                     minaRest.className = "mina"
                     minaRest.innerHTML = imagemMina()
                 }
-            }
-        }
+            } }
+            resultadoJogo(false)
 
-        resultadoJogo(false)
-
-    } else caixaNumero(x)
+        } else caixaCliked(caixa)
+    //}
 
     if(verificaGanhador()) resultadoJogo(true) //se retornar true eh pq ganhou
 }
@@ -85,18 +85,18 @@ fun abrirCelula(pos: String){
   caixas fechadas com minas no campo
  */
 fun verificaGanhador(): Boolean{
-    for(j in 0..5){
-        for(i in 0..5){
-            val caixa = getElement(j.toString() + i.toString()) as HTMLTableCellElement
+    val j = generateSequence(0, {x -> x+1})
+    val i = generateSequence(0, {x -> x+1})
+    j.take(6).forEach { x -> i.take(6).forEach {  y ->
+        val caixa = getElement(x.toString() + y.toString()) as HTMLTableCellElement
 
-            if(caixa.className.equals("caixaFechada") && !caixa.textContent.toString().equals("*")) return false
-        }
-    }
+        if(caixa.className.equals("caixaFechada") && !caixa.textContent.toString().equals("*")) return false
+    } }
     return true
 }
 
 //funcao para deixar os numeros com cor (CSS)
-fun caixaNumero(x: HTMLTableCellElement){
+fun caixaCliked(x: HTMLTableCellElement){
     if(x.textContent.toString().equals("1")) x.className = "clicked num1"
     else if(x.textContent.toString().equals("2")) x.className = "clicked num2"
     else if(x.textContent.toString().equals("3")) x.className = "clicked num3"
@@ -169,7 +169,7 @@ fun caixaBranco(y: String, x: String) {
         caixaBranco((j + 1).toString(), i.toString())
         abreCelulasRedor(j + 1, i)
     }
-    if ((j + 1) <= 5 && (i + 1) >= 0 && getElement((j + 1).toString() + (i + 1).toString()).textContent.equals("0") &&
+    if ((j + 1) <= 5 && (i + 1) >= 0 && (i + 1) <= 5 && getElement((j + 1).toString() + (i + 1).toString()).textContent.equals("0") &&
             !minasExist.contains((j + 1).toString() + (i + 1).toString())) {
 
         caixaBranco((j + 1).toString(), (i + 1).toString())
@@ -180,14 +180,14 @@ fun caixaBranco(y: String, x: String) {
 
 //verifica se a posicao nao esta fora da matrix antes de abrir caixas ao redor
 fun abreCelulasRedor(j: Int, i: Int){
-    if ((j - 1) >= 0 && (i - 1) >= 0) caixaNumero(getElement((j-1).toString() + (i-1).toString()) as HTMLTableCellElement)
-    if ((j - 1) >= 0) caixaNumero(getElement((j-1).toString() + i.toString()) as HTMLTableCellElement)
-    if ((j - 1) >= 0 && (i + 1) <= 5) caixaNumero(getElement((j-1).toString() + (i+1).toString()) as HTMLTableCellElement)
-    if ((i - 1) >= 0) caixaNumero(getElement(j.toString() + (i-1).toString()) as HTMLTableCellElement)
-    if ((i + 1) <= 5) caixaNumero(getElement(j.toString() + (i+1).toString()) as HTMLTableCellElement)
-    if ((j + 1) <= 5 && (i - 1) >= 0) caixaNumero(getElement((j+1).toString() + (i-1).toString()) as HTMLTableCellElement)
-    if ((j + 1) <= 5) caixaNumero(getElement((j+1).toString() + i.toString()) as HTMLTableCellElement)
-    if ((j + 1) <= 5 && (i + 1) >= 0 && (i + 1) <= 5) caixaNumero(getElement((j+1).toString() + (i+1).toString()) as HTMLTableCellElement)
+    if ((j - 1) >= 0 && (i - 1) >= 0) caixaCliked(getElement((j-1).toString() + (i-1).toString()) as HTMLTableCellElement)
+    if ((j - 1) >= 0) caixaCliked(getElement((j-1).toString() + i.toString()) as HTMLTableCellElement)
+    if ((j - 1) >= 0 && (i + 1) <= 5) caixaCliked(getElement((j-1).toString() + (i+1).toString()) as HTMLTableCellElement)
+    if ((i - 1) >= 0) caixaCliked(getElement(j.toString() + (i-1).toString()) as HTMLTableCellElement)
+    if ((i + 1) <= 5) caixaCliked(getElement(j.toString() + (i+1).toString()) as HTMLTableCellElement)
+    if ((j + 1) <= 5 && (i - 1) >= 0) caixaCliked(getElement((j+1).toString() + (i-1).toString()) as HTMLTableCellElement)
+    if ((j + 1) <= 5) caixaCliked(getElement((j+1).toString() + i.toString()) as HTMLTableCellElement)
+    if ((j + 1) <= 5 && (i + 1) >= 0 && (i + 1) <= 5) caixaCliked(getElement((j+1).toString() + (i+1).toString()) as HTMLTableCellElement)
 }
 
 fun criaMinasCampo(numMinas: Int){
@@ -207,48 +207,46 @@ fun criaMinasCampo(numMinas: Int){
     }
 }
 
-//TODO TENTAR FAZER UMA RECURSAO
 fun varreCampo(){
-    //percorre todas as caixas para verificar se existem minas ao redor
-    for(j in 0..5){
-        for(i in 0..5){
-            val caixa = getElement(j.toString() + i.toString())
+    val x = generateSequence(0, {x -> x+1})
+    val y = generateSequence(0, {y -> y+1})
+    x.take(6).forEach { j -> y.take(6).forEach {  i ->
+        val caixa = getElement(j.toString() + i.toString())
 
-            //se for uma mina ('*'), verifica se esta dentro da matriz (j && i >= 0 e j && i<= 5)
-            if(!caixa.textContent.equals("*")) {
-                if ((j - 1) >= 0 && (i - 1) >= 0 &&
-                        document.getElementById((j - 1).toString() + (i - 1).toString())?.textContent.equals("*"))
-                    caixa.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
+        //se for uma mina ('*'), verifica se esta dentro da matriz (j && i >= 0 e j && i<= 5)
+        if(!caixa.textContent.equals("*")) {
+            if ((j - 1) >= 0 && (i - 1) >= 0 &&
+                    document.getElementById((j - 1).toString() + (i - 1).toString())?.textContent.equals("*"))
+                caixa.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
 
-                if ((j - 1) >= 0 &&
-                        document.getElementById((j - 1).toString() + (i).toString())?.textContent.equals("*"))
-                    caixa.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
+            if ((j - 1) >= 0 &&
+                    document.getElementById((j - 1).toString() + (i).toString())?.textContent.equals("*"))
+                caixa.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
 
-                if ((j - 1) >= 0 && (i + 1) <= 5 &&
-                        document.getElementById((j - 1).toString() + (i + 1).toString())?.textContent.equals("*"))
-                    caixa.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
+            if ((j - 1) >= 0 && (i + 1) <= 5 &&
+                    document.getElementById((j - 1).toString() + (i + 1).toString())?.textContent.equals("*"))
+                caixa.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
 
-                if ((i - 1) >= 0 &&
-                        document.getElementById((j).toString() + (i - 1).toString())?.textContent.equals("*"))
-                    caixa.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
+            if ((i - 1) >= 0 &&
+                    document.getElementById((j).toString() + (i - 1).toString())?.textContent.equals("*"))
+                caixa.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
 
-                if ((i + 1) <= 5 && document.getElementById((j).toString() + (i + 1).toString())?.textContent.equals("*")) {
-                    caixa.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
-                }
-                if ((j + 1) <= 5 && (i - 1) >= 0 &&
-                        document.getElementById((j + 1).toString() + (i - 1).toString())?.textContent.equals("*"))
-                    caixa.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
-
-                if ((j + 1) <= 5 &&
-                        document.getElementById((j + 1).toString() + (i).toString())?.textContent.equals("*"))
-                    caixa.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
-
-                if ((j + 1) <= 5 && (i + 1) >= 0 &&
-                        document.getElementById((j + 1).toString() + (i + 1).toString())?.textContent.equals("*"))
-                    caixa.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
+            if ((i + 1) <= 5 && document.getElementById((j).toString() + (i + 1).toString())?.textContent.equals("*")) {
+                caixa.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
             }
+            if ((j + 1) <= 5 && (i - 1) >= 0 &&
+                    document.getElementById((j + 1).toString() + (i - 1).toString())?.textContent.equals("*"))
+                caixa.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
+
+            if ((j + 1) <= 5 &&
+                    document.getElementById((j + 1).toString() + (i).toString())?.textContent.equals("*"))
+                caixa.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
+
+            if ((j + 1) <= 5 && (i + 1) >= 0 &&
+                    document.getElementById((j + 1).toString() + (i + 1).toString())?.textContent.equals("*"))
+                caixa.innerHTML = ((caixa.textContent)!!.toInt() + 1).toString()
         }
-    }
+    } }
 }
 
 fun informaNumMinas(num: Int){
