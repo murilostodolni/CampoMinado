@@ -51,30 +51,24 @@ fun desabilitaClickMouse(){
 fun abrirCelula(pos: String){
     val caixa = getElement(pos) as HTMLTableCellElement
 
-    //if(caixa.className.equals("caixaFechada")){
-    //    posivelMina(pos)
+    /* dependendo do numero de minas que tiver ao redor, vai mudar a classe para colorir os numeros! */
+    if (caixa.textContent.toString().equals("0")) caixaBranco(pos.get(0).toString(), pos.get(1).toString())
+    else if (caixa.textContent.toString().equals("*")) { //verifica se eh uma mina
+        caixa.className = "mina-clicked"
+        caixa.innerHTML = imagemMina()
 
-    //} else if(caixa.className.equals("bandeira")) {
-        /* dependendo do numero de minas que tiver ao redor, vai mudar a classe para colorir os numeros! */
-        if (caixa.textContent.toString().equals("0")) caixaBranco(pos.get(0).toString(), pos.get(1).toString())
-        else if (caixa.textContent.toString().equals("*")) { //verifica se eh uma mina
-            caixa.className = "mina-clicked"
-            caixa.innerHTML = imagemMina()
+        val j = generateSequence(0, {x -> x+1})
+        val i = generateSequence(0, {x -> x+1})
+        j.take(6).forEach { x -> i.take(6).forEach { y ->
+            val minaRest = document.getElementById(x.toString() + y.toString()) as HTMLTableCellElement
 
-            val j = generateSequence(0, {x -> x+1})
-            val i = generateSequence(0, {x -> x+1})
-            j.take(6).forEach { x -> i.take(6).forEach { y ->
-                val minaRest = document.getElementById(x.toString() + y.toString()) as HTMLTableCellElement
-
-                if (minaRest.textContent.toString().equals("*")) {
-                    minaRest.className = "mina"
-                    minaRest.innerHTML = imagemMina()
-                }
-            } }
-            resultadoJogo(false)
-
-        } else caixaCliked(caixa)
-    //}
+            if (minaRest.textContent.toString().equals("*")) {
+                minaRest.className = "mina"
+                minaRest.innerHTML = imagemMina()
+            }
+        } }
+        resultadoJogo(false)
+    } else caixaCliked(caixa)
 
     if(verificaGanhador()) resultadoJogo(true) //se retornar true eh pq ganhou
 }
@@ -82,8 +76,7 @@ fun abrirCelula(pos: String){
 /*metodo para verificar se ganhou o jogo (percorre toda a matriz (desenho acima da main),
   se tiver uma caixa com a classe "caixaFechada" e seja diferente de mina ('*') já muda para false, ou seja, não ganhou.
   Caso ele percorra toda a matriz e não mude para false, significa que só exitem as
-  caixas fechadas com minas no campo
- */
+  caixas fechadas com minas no campo */
 fun verificaGanhador(): Boolean{
     val j = generateSequence(0, {x -> x+1})
     val i = generateSequence(0, {x -> x+1})
@@ -106,24 +99,22 @@ fun caixaCliked(x: HTMLTableCellElement){
 }
 
 /*eh utilizado na funcao recursiva abaixo, para saber quais caixa já foram verificadas,
-  dessa forma a funcao não entra em loop infinito!!!
- */
-var minasExist = mutableListOf<String>()
+  dessa forma a funcao não entra em loop infinito!!! */
+val minasExist = mutableSetOf<String>()
 
 /* funcao recursiva, responsavel por abrir as caixas com valor '0', ou seja, sem minas ao redor....
 
    IDEIA: verifica todos as caixas ao redor, se houver caixas com 0, faz a recursividade entrando em cada uma delas,
    quando for voltando da recursividade vai abrindo todas as caixas ao redor da caixa principal naquela recursao.
    OBS: Utilizar um array de int foi a unica maneira de evitar que a recursao entre em um loop infinito entre duas caixas,
-   pois ele só entra em determinada caixa se ela não estiver no array, ou seja, não volta para uma recursao que ja foi feita.
-*/
+   pois ele só entra em determinada caixa se ela não estiver no array, ou seja, não volta para uma recursao que ja foi feita */
 fun caixaBranco(y: String, x: String) {
 
     val caixa = getElement(y + x) as HTMLTableCellElement
     val j = y.toInt()
     val i = x.toInt()
 
-    if(!minasExist.contains(y + x)) minasExist.add(y + x) //se o num nao ainda nao tiver na lista, adiciona
+    minasExist.add(y + x) //adiciona a posicao da caixa, como tratasse de um set, nao aceita repeticao
 
     caixa.className = "clicked num0" //deixando a caixa sem informacao (CSS)
 
@@ -191,9 +182,7 @@ fun abreCelulasRedor(j: Int, i: Int){
 }
 
 fun criaMinasCampo(numMinas: Int){
-    if(numMinas == 0)
-        return
-    else {
+    if(numMinas != 0) {
         val minaY = Random.nextInt(0, 5)
         val minaX = Random.nextInt(0, 5)
 
@@ -271,9 +260,8 @@ fun informaNumMinas(num: Int){
   -> y >= 0 e y <= 5
   -> x >= 0 e x <= 5
  */
-
 fun main() {
-    val numDeMinas = 7
+    val numDeMinas = 8
 
     informaNumMinas(numDeMinas) //mostra quantas minas existem no campo
 

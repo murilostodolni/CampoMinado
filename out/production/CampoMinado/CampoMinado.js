@@ -151,8 +151,7 @@ var CampoMinado = function (_, Kotlin) {
     var caixa = Kotlin.isType(tmp$ = getElement(y + x), HTMLTableCellElement) ? tmp$ : throwCCE();
     var j = toInt(y);
     var i = toInt(x);
-    if (!minasExist.contains_11rb$(y + x))
-      minasExist.add_11rb$(y + x);
+    minasExist.add_11rb$(y + x);
     caixa.className = 'clicked num0';
     if ((j - 1 | 0) >= 0 && (i - 1 | 0) >= 0 && equals_0(getElement((j - 1 | 0).toString() + (i - 1 | 0).toString()).textContent, '0') && !minasExist.contains_11rb$((j - 1 | 0).toString() + (i - 1 | 0).toString())) {
       caixaBranco((j - 1 | 0).toString(), (i - 1 | 0).toString());
@@ -216,9 +215,7 @@ var CampoMinado = function (_, Kotlin) {
     }
   }
   function criaMinasCampo(numMinas) {
-    if (numMinas === 0)
-      return;
-    else {
+    if (numMinas !== 0) {
       var minaY = Random.Default.nextInt_vux9f0$(0, 5);
       var minaX = Random.Default.nextInt_vux9f0$(0, 5);
       var caixa = getElement(minaY.toString() + minaX.toString());
@@ -277,7 +274,7 @@ var CampoMinado = function (_, Kotlin) {
     info.innerHTML = info.innerHTML + trimIndent('\n' + '        : ' + num + '\n' + '    ');
   }
   function main() {
-    var numDeMinas = 7;
+    var numDeMinas = 8;
     informaNumMinas(numDeMinas);
     criaMinasCampo(numDeMinas);
     varreCampo();
@@ -294,9 +291,6 @@ var CampoMinado = function (_, Kotlin) {
   Object.defineProperty(_, 'minasExist', {
     get: function () {
       return minasExist;
-    },
-    set: function (value) {
-      minasExist = value;
     }
   });
   _.caixaBranco_puj7f4$ = caixaBranco;
@@ -305,8 +299,8 @@ var CampoMinado = function (_, Kotlin) {
   _.varreCampo = varreCampo;
   _.informaNumMinas_za3lpa$ = informaNumMinas;
   _.main = main;
-  var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
-  minasExist = ArrayList_init();
+  var LinkedHashSet_init = Kotlin.kotlin.collections.LinkedHashSet_init_287e2$;
+  minasExist = LinkedHashSet_init();
   main();
   Kotlin.defineModule('CampoMinado', _);
   return _;
